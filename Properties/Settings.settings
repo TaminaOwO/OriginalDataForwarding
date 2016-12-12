@@ -1,0 +1,48 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OriginalDataForwarding.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DpscIp" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.10.238</Value>
+    </Setting>
+    <Setting Name="DpscPort" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">8000</Value>
+    </Setting>
+    <Setting Name="DpscChk" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">2102342342</Value>
+    </Setting>
+    <Setting Name="TseServerPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">7001</Value>
+    </Setting>
+    <Setting Name="TseRawChannel" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">9951</Value>
+    </Setting>
+    <Setting Name="OtcRawChannel" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">9952</Value>
+    </Setting>
+    <Setting Name="TmxRawChannel" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">9953</Value>
+    </Setting>
+    <Setting Name="OptRawChannel" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">9954</Value>
+    </Setting>
+    <Setting Name="Market" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TSE</Value>
+    </Setting>
+    <Setting Name="MarketComment" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(我是註解) Market 欄請填 TSE  , OTC , TMX , OPT 任一文字</Value>
+    </Setting>
+    <Setting Name="OtcServerPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">7002</Value>
+    </Setting>
+    <Setting Name="TmxServerPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">7003</Value>
+    </Setting>
+    <Setting Name="OptServerPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">7004</Value>
+    </Setting>
+    <Setting Name="HeartBeatFrequency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">30</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
