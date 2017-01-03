@@ -96,7 +96,7 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\Git\CMoney.WebBackend\CMoney.WebBackend.csproj">
+    <ProjectReference Include="..\..\WebDll\CMoney.WebBackend\CMoney.WebBackend.csproj">
       <Project>{989a21e3-add5-42e7-96d5-0e5d53ef80d5}</Project>
       <Name>CMoney.WebBackend</Name>
     </ProjectReference>

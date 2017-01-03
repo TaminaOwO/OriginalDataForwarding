@@ -145,6 +145,8 @@ namespace OriginalDataForwarding
             Label_ClientCount.Text = fProxyServer.GetAvailableClinetCount().ToString();
             Label_ForwardingCount.Text = fForwardModule.GetForwardingCount().ToString();
             Label_HeartCountDown.Text = fHeartbeat.GetHeartbeatRemainingSec().ToString( "0" );
+            fBindingSource.ResetBindings( true );
+            DataGridView_Clients.AutoResizeColumns();
         }
 
         /// <summary>
