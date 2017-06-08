@@ -61,121 +61,75 @@ namespace OriginalDataForwarding.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("7001")]
-        public int TseServerPort {
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public byte ApMartketType {
             get {
-                return ((int)(this["TseServerPort"]));
+                return ((byte)(this["ApMartketType"]));
             }
             set {
-                this["TseServerPort"] = value;
+                this["ApMartketType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("7001")]
+        public int MulticastPort {
+            get {
+                return ((int)(this["MulticastPort"]));
+            }
+            set {
+                this["MulticastPort"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("9951")]
-        public uint TseRawChannel {
+        public ushort RawDataChannel {
             get {
-                return ((uint)(this["TseRawChannel"]));
+                return ((ushort)(this["RawDataChannel"]));
             }
             set {
-                this["TseRawChannel"] = value;
+                this["RawDataChannel"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("9952")]
-        public uint OtcRawChannel {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"ApMartketType
+Tse: 2
+Otc: 3
+Tmx: 4
+Opt: 5
+Emerging: 6
+TmxAfterHours: 7
+OptAfterHours: 8
+
+MulticastPort
+Tse: 7001
+Otc: 7002
+Tmx: 7003
+Opt: 7004
+Emerging: 7005
+TmxAfterHours: 7203
+OptAfterHours: 7204
+
+RawDataChannel
+Tse: 9951
+Otc: 9952
+Tmx: 9953
+Opt: 9954
+Emerging: 9955
+TmxAfterHours: 9960
+OptAfterHours: 9961
+")]
+        public string Memo {
             get {
-                return ((uint)(this["OtcRawChannel"]));
+                return ((string)(this["Memo"]));
             }
             set {
-                this["OtcRawChannel"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("9953")]
-        public uint TmxRawChannel {
-            get {
-                return ((uint)(this["TmxRawChannel"]));
-            }
-            set {
-                this["TmxRawChannel"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("9954")]
-        public uint OptRawChannel {
-            get {
-                return ((uint)(this["OptRawChannel"]));
-            }
-            set {
-                this["OptRawChannel"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("TSE")]
-        public string Market {
-            get {
-                return ((string)(this["Market"]));
-            }
-            set {
-                this["Market"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("(我是註解) Market 欄請填 TSE  , OTC , TMX , OPT 任一文字")]
-        public string MarketComment {
-            get {
-                return ((string)(this["MarketComment"]));
-            }
-            set {
-                this["MarketComment"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("7002")]
-        public int OtcServerPort {
-            get {
-                return ((int)(this["OtcServerPort"]));
-            }
-            set {
-                this["OtcServerPort"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("7003")]
-        public int TmxServerPort {
-            get {
-                return ((int)(this["TmxServerPort"]));
-            }
-            set {
-                this["TmxServerPort"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("7004")]
-        public int OptServerPort {
-            get {
-                return ((int)(this["OptServerPort"]));
-            }
-            set {
-                this["OptServerPort"] = value;
+                this["Memo"] = value;
             }
         }
         

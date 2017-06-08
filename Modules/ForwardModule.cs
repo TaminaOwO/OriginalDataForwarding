@@ -154,17 +154,14 @@ namespace OriginalDataForwarding.Modules
         {
             switch ( dataType )
             {
-                case 9951:
-                case 9952:
-                case 9953:
-                case 9954:
-
-                    fForwardingCount++;
-
-                    //直接把收到封包轉發出去
-                    fBroadcasting( data, dataType );
-                    break;
                 default:
+                    if ( dataType == fChannel )
+                    {
+                        fForwardingCount++;
+
+                        //直接把收到封包轉發出去
+                        fBroadcasting( data, dataType );
+                    }
                     break;
             }
         }

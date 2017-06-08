@@ -23,48 +23,22 @@ namespace OriginalDataForwarding
             InitializeComponent();
 
             fSetting = new Settings();
-            
-            uint channel = 0;
-            int serverPort = 0;
-            string market = fSetting.Market.ToUpper();
 
-            //依市場別決定訂閱的通道與發送的通道
-            switch ( market )
-            {
-                case "TSE":
-                    channel = fSetting.TseRawChannel;
-                    serverPort = fSetting.TseServerPort;
-                    break;
-                case "OTC":
-                    channel = fSetting.OtcRawChannel;
-                    serverPort = fSetting.OtcServerPort;
-                    break;
-                case "TMX":
-                    channel = fSetting.TmxRawChannel;
-                    serverPort = fSetting.TmxServerPort;
-                    break;
-                case "OPT":
-                    channel = fSetting.OptRawChannel;
-                    serverPort = fSetting.OptServerPort;
-                    break;
-                default:
-                    OutMessages( "無法判別市場，程式終止" );
-                    return;
+            MarketType marketType = (MarketType)fSetting.ApMartketType;
 
-            }
 
-            this.Text = string.Format( "{0} {1} Ver:{2}", market, Application.ProductName, Application.ProductVersion );
+            this.Text = string.Format( "{0} {1} Ver:{2}", marketType, Application.ProductName, Application.ProductVersion );
 
             fOriginKey = string.Format( "{0}:{1}",
                                 GeneralTools.GetServiceOriginalKey( fSetting.DpscPort, Assembly.GetExecutingAssembly() )
-                                , market );
+                                , marketType );
 
             TextBox_DpscKeyId.Text = fOriginKey;
 
             // dataGridView 錯誤處理 (不然會跳exception)
             DataGridView_Clients.DataError += DataGridView_Clients_DataError;
 
-            fProxyServer = new ProxyServer( serverPort );
+            fProxyServer = new ProxyServer( fSetting.MulticastPort );
             fProxyServer.OnStatus.OnFireEvent += fProxyServer_OnStatusMessage;
 
             // 心跳封包樣本
@@ -75,7 +49,7 @@ namespace OriginalDataForwarding
                                                 fSetting.DpscIp, fSetting.DpscPort, fSetting.DpscChk,
                                                 OutMessages,
                                                 fHeartbeat.BlockingHeartbeat,
-                                                channel 
+                                                fSetting.RawDataChannel
                                                );
 
             // datagrid綁資料結構
@@ -83,6 +57,8 @@ namespace OriginalDataForwarding
             fBindingSource.DataSource = fProxyServer.GetAvailableClinets();
             DataGridView_Clients.DataSource = fBindingSource;
         }
+
+        #region 變數
 
         /// <summary>
         /// 設定
@@ -114,6 +90,54 @@ namespace OriginalDataForwarding
         /// </summary>
         private ForwardModule fForwardModule;
 
+        #endregion
+
+        #region 列舉
+
+        /// <summary>
+        /// 市場別
+        /// </summary>
+        public enum MarketType : byte
+        {
+            /// <summary>
+            /// 上市
+            /// </summary>
+            TSE = 2,
+
+            /// <summary>
+            /// 上櫃
+            /// </summary>
+            OTC = 3,
+
+            /// <summary>
+            /// 期貨
+            /// </summary>
+            TMX = 4,
+
+            /// <summary>
+            /// 選擇權
+            /// </summary>
+            OPT = 5,
+
+            /// <summary>
+            /// 興櫃
+            /// </summary>
+            EMERGING = 6,
+
+            /// <summary>
+            /// 期貨盤後
+            /// </summary>
+            TMX_AfterHours = 7,
+
+            /// <summary>
+            /// 選擇權盤後
+            /// </summary>
+            OPT_AfterHours = 8
+        }
+
+        #endregion 列舉
+
+        #region 方法
 
         /// <summary>
         /// 處理狀態訊息事件
@@ -177,6 +201,7 @@ namespace OriginalDataForwarding
             e.Cancel = true;
         }
 
+        #endregion
 
     }
 
