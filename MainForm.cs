@@ -56,6 +56,7 @@ namespace OriginalDataForwarding
             fBindingSource = new BindingSource();
             fBindingSource.DataSource = fProxyServer.GetAvailableClinets();
             DataGridView_Clients.DataSource = fBindingSource;
+
         }
 
         #region 變數
@@ -89,6 +90,11 @@ namespace OriginalDataForwarding
         /// 發送模組
         /// </summary>
         private ForwardModule fForwardModule;
+
+        /// <summary>
+        /// 有效連線
+        /// </summary>
+        private List<ProxyClient> fAvailableClients;
 
         #endregion
 
@@ -203,6 +209,44 @@ namespace OriginalDataForwarding
 
         #endregion
 
+        /// <summary>
+        /// 取得目前所有有效連線
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_GetAllClients_Click( object sender, EventArgs e )
+        {
+            checkedListBox_Clients.Items.Clear();
+
+            fAvailableClients = fProxyServer.GetAvailableClinets();
+
+            foreach ( var client in fAvailableClients )
+            {
+                checkedListBox_Clients.Items.Add( client.Address, false );
+            }
+        }
+
+        /// <summary>
+        /// 剔除已勾選連線
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_RemoveClients_Click( object sender, EventArgs e )
+        {
+            // 已選擇的連線 Index
+            var checkedIndex = checkedListBox_Clients.CheckedIndices.Cast<int>().ToList();
+
+            // 欲剔除的連線
+            var checkedClients = new List<ProxyClient>();
+            foreach ( var index in checkedIndex )
+            {
+                checkedClients.Add( fAvailableClients[index] );
+            }
+
+            fProxyServer.RemoveClients( checkedClients );
+
+            button_GetAllClients.PerformClick();
+        }
     }
 
 }

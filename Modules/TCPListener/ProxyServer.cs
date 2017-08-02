@@ -63,6 +63,11 @@ namespace OriginalDataForwarding.Modules.TCPListener
             GC.SuppressFinalize( this );
         }
 
+        /// <summary>
+        /// 同 IP 的最大連線數
+        /// </summary>
+        private const int SAME_IP_LIMIT_COUNT = 2;
+
         #region 變數
 
         /// <summary>
@@ -133,8 +138,8 @@ namespace OriginalDataForwarding.Modules.TCPListener
         {
             CancellationToken token = (CancellationToken)tokenObj;
 
-            //啟動接收
-            fTcpListener.Start();
+            //啟動接收 10個連線數
+            fTcpListener.Start(10);
 
             //端點資訊
             var info = (IPEndPoint)fTcpListener.Server.LocalEndPoint;
@@ -247,6 +252,23 @@ namespace OriginalDataForwarding.Modules.TCPListener
             return fClientPool;
         }
 
+        /// <summary>
+        /// 踢出指定連線
+        /// </summary>
+        /// <param name="willRemoveClients">欲剔除的連線</param>
+        public void RemoveClients( List<ProxyClient> willRemoveClients )
+        {
+            foreach ( var item in willRemoveClients )
+            {
+                // 紀錄斷線 LOG
+                OnConnectionStatus.OnFireMessage( item );
+
+                fClientPool.Remove( item );
+
+                OnStatus.OnFireMessage( string.Format( "剔除 Client [{0}]", item.Address ) );
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -261,9 +283,17 @@ namespace OriginalDataForwarding.Modules.TCPListener
                 fClientPool.AddRange( allConnection );
             }
 
-            // 丟掉不要的連線
+            // 超過限制數量的連線
+            var overLimitClients = fClientPool.Where( x => x.ClientSocket.Connected)
+                                    .GroupBy( x => x.Address ).ToDictionary( x => x.Key, x => x.ToList() )
+                                    .Where( x => x.Value.Count > SAME_IP_LIMIT_COUNT )
+                                    .Select( x => x.Value.LastOrDefault() ).ToList();
+
+            // 已斷線的連線
             var disconnected = fClientPool.Where( x => !x.ClientSocket.Connected ).ToList();
-            foreach ( var item in disconnected )
+
+            // 丟掉不要的連線
+            foreach ( var item in disconnected.Concat(overLimitClients).Distinct() )
             {
                 // 紀錄斷線LOG
                 OnConnectionStatus.OnFireMessage( item );

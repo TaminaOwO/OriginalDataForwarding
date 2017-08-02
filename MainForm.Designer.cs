@@ -45,11 +45,16 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.DataGridView_Clients = new System.Windows.Forms.DataGridView();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button_GetAllClients = new System.Windows.Forms.Button();
+            this.checkedListBox_Clients = new System.Windows.Forms.CheckedListBox();
+            this.button_RemoveClients = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_Clients)).BeginInit();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // TextBox_Status
@@ -156,6 +161,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(10, 85);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -193,6 +199,46 @@
             this.DataGridView_Clients.Size = new System.Drawing.Size(418, 116);
             this.DataGridView_Clients.TabIndex = 0;
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.button_RemoveClients);
+            this.tabPage3.Controls.Add(this.checkedListBox_Clients);
+            this.tabPage3.Controls.Add(this.button_GetAllClients);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(421, 119);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Tool";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // button_GetAllClients
+            // 
+            this.button_GetAllClients.Location = new System.Drawing.Point(317, 9);
+            this.button_GetAllClients.Name = "button_GetAllClients";
+            this.button_GetAllClients.Size = new System.Drawing.Size(89, 19);
+            this.button_GetAllClients.TabIndex = 0;
+            this.button_GetAllClients.Text = "取得目前連線";
+            this.button_GetAllClients.UseVisualStyleBackColor = true;
+            this.button_GetAllClients.Click += new System.EventHandler(this.button_GetAllClients_Click);
+            // 
+            // checkedListBox_Clients
+            // 
+            this.checkedListBox_Clients.FormattingEnabled = true;
+            this.checkedListBox_Clients.Location = new System.Drawing.Point(18, 9);
+            this.checkedListBox_Clients.Name = "checkedListBox_Clients";
+            this.checkedListBox_Clients.Size = new System.Drawing.Size(279, 106);
+            this.checkedListBox_Clients.TabIndex = 1;
+            // 
+            // button_RemoveClients
+            // 
+            this.button_RemoveClients.Location = new System.Drawing.Point(317, 96);
+            this.button_RemoveClients.Name = "button_RemoveClients";
+            this.button_RemoveClients.Size = new System.Drawing.Size(89, 19);
+            this.button_RemoveClients.TabIndex = 2;
+            this.button_RemoveClients.Text = "剔除勾選連線";
+            this.button_RemoveClients.UseVisualStyleBackColor = true;
+            this.button_RemoveClients.Click += new System.EventHandler(this.button_RemoveClients_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -211,6 +257,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_Clients)).EndInit();
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -233,6 +280,10 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.DataGridView DataGridView_Clients;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Button button_RemoveClients;
+        private System.Windows.Forms.CheckedListBox checkedListBox_Clients;
+        private System.Windows.Forms.Button button_GetAllClients;
     }
 }
 
