@@ -17,8 +17,11 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 建構子
         /// </summary>
         /// <param name="socketPort"></param>
-        public ProxyServer( int socketPort )
+        /// <param name="outputMessage">輸出訊息</param>
+        public ProxyServer ( int socketPort, Action<string> outputMessage)
         {
+            fOutputMessage = outputMessage;
+
             // Listener worker
             fTcpListener = new TcpListener( IPAddress.Any, socketPort );
             fToken = new CancellationTokenSource();
@@ -106,6 +109,11 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 存放新連線的暫存體
         /// </summary>
         private ThreadBridge<AckTask> fCastingMessage;
+
+        /// <summary>
+        /// 輸出訊息
+        /// </summary>
+        private Action<string> fOutputMessage;
 
         #endregion
 
@@ -309,24 +317,29 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// <param name="successCount"></param>
         private void SendBroadcasting( params AckTask[] messages )
         {
+            var taskStartTick = Environment.TickCount;
+            var usedTicks = new List<string>();
+
             //打出通知
+            int total = 0;
+            int success = 0;
+            int exceptionCount = 0;
             foreach ( var data in messages )
             {
-
-                int total = 0;
-                int success = 0;
-                string errorMessage = string.Empty;
-
                 foreach ( var item in fClientPool )
                 {
+                    var sendBroadcastingTick = Environment.TickCount;
+                    string tickMessage = null;
+
                     try
                     {
-
                         if ( item.ClientSocket.Connected )
                         {
                             //ACK
                             total++;
 
+                            int writeTick = Environment.TickCount;
+                            
                             //發送資料
                             if ( item.ClientStream.CanWrite )
                             {
@@ -336,6 +349,9 @@ namespace OriginalDataForwarding.Modules.TCPListener
                                 success++;
                             }
 
+                            writeTick = Environment.TickCount - writeTick;
+                            int readTick = Environment.TickCount;
+
                             //處理讀取資料(略過不做)
                             if ( item.ClientStream.CanRead && item.ClientStream.DataAvailable )
                             {
@@ -343,14 +359,29 @@ namespace OriginalDataForwarding.Modules.TCPListener
                                 item.ClientStream.Read( fReadByte, 0, fReadByte.Length );
                             }
 
+                            readTick = Environment.TickCount - readTick;
+                            tickMessage = string.Format( "W:{0},R:{1}", writeTick, readTick );
                         }
                     }
                     catch ( Exception e )
                     {
                         OnStatus.OnFireMessage( e.ToString() );
+                        exceptionCount++;
                     }
-                }
 
+                    sendBroadcastingTick = Environment.TickCount - sendBroadcastingTick;
+                    usedTicks.Add( string.Format( "{0}[{1}]", sendBroadcastingTick, tickMessage ?? "Exception" ) );
+                }
+            }
+
+            taskStartTick = Environment.TickCount - taskStartTick;
+
+            //如果單次轉發超過300ms就應該注意
+            if ( taskStartTick > 300 )
+            {
+                fOutputMessage( string.Format( "SendBroadcasting TaskTick : {0}", taskStartTick ) );
+                fOutputMessage( string.Format( "TotalCount : {0} SuccessCount : {1} ExceptionCount : {2}", total, success, exceptionCount ) );
+                fOutputMessage( string.Format( "UsedTicksList : {0}", string.Join( " , ", usedTicks ) ) );
             }
         }
 

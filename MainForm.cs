@@ -25,27 +25,24 @@ namespace OriginalDataForwarding
             fSetting = new Settings();
 
             MarketType marketType = (MarketType)fSetting.ApMartketType;
-
-
             this.Text = string.Format( "{0} {1} Ver:{2}", marketType, Application.ProductName, Application.ProductVersion );
 
-            fOriginKey = string.Format( "{0}:{1}",
-                                GeneralTools.GetServiceOriginalKey( fSetting.DpscPort, Assembly.GetExecutingAssembly() )
-                                , marketType );
+            //服務原始IDKey
+            string originKey = string.Format( "{0}:{1}", GeneralTools.GetServiceOriginalKey( fSetting.DpscPort, Assembly.GetExecutingAssembly() ), marketType );
 
-            TextBox_DpscKeyId.Text = fOriginKey;
+            TextBox_DpscKeyId.Text = originKey;
 
             // dataGridView 錯誤處理 (不然會跳exception)
             DataGridView_Clients.DataError += DataGridView_Clients_DataError;
 
-            fProxyServer = new ProxyServer( fSetting.MulticastPort );
+            fProxyServer = new ProxyServer( fSetting.MulticastPort , OutMessages );
             fProxyServer.OnStatus.OnFireEvent += fProxyServer_OnStatusMessage;
 
             // 心跳封包樣本
             fHeartbeat = new Heartbeat( new TimeSpan( 0, 0, fSetting.HeartBeatFrequency ), fProxyServer.Broadcasting );
 
             //發送模組
-            fForwardModule = new ForwardModule( fOriginKey, 
+            fForwardModule = new ForwardModule( originKey, 
                                                 fSetting.DpscIp, fSetting.DpscPort, fSetting.DpscChk,
                                                 OutMessages,
                                                 fHeartbeat.BlockingHeartbeat,
@@ -65,11 +62,6 @@ namespace OriginalDataForwarding
         /// 設定
         /// </summary>
         private Settings fSetting;
-
-        /// <summary>
-        /// 服務原始IDKey
-        /// </summary>
-        private string fOriginKey;
 
         /// <summary>
         /// stocket轉送

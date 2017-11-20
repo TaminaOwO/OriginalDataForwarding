@@ -31,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -56,9 +57,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CMoney.Real.Dpsc">
-      <HintPath>..\..\WebDll\CMoney.WebBackend\AdditionalDll\CMoney.Real.Dpsc.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -116,7 +114,11 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\WebDll\CMoney.WebBackend\CMoney.WebBackend.csproj">
+    <ProjectReference Include="..\..\CG_System\CMoney.Real.Dpsc\CMoney.Real.Dpsc.csproj">
+      <Project>{159a7f3e-0a82-4a96-b864-5801a90160d5}</Project>
+      <Name>CMoney.Real.Dpsc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CG_WebDll\CMoney.WebBackend\CMoney.WebBackend.csproj">
       <Project>{989a21e3-add5-42e7-96d5-0e5d53ef80d5}</Project>
       <Name>CMoney.WebBackend</Name>
     </ProjectReference>
