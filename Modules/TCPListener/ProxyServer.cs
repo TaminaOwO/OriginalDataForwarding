@@ -2,6 +2,7 @@
 using OriginalDataForwarding.POCO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -70,6 +71,16 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 同 IP 的最大連線數
         /// </summary>
         private const int SAME_IP_LIMIT_COUNT = 2;
+
+        /// <summary>
+        /// 合理的時間間格
+        /// </summary>
+        private const long REASONABLE_TIME_GRID = 300;
+
+        /// <summary>
+        /// 合理的單一工作時間間格
+        /// </summary>
+        private const long REASONABLE_TIME_GRID_BY_TASK = 10;
 
         #region 變數
 
@@ -206,17 +217,28 @@ namespace OriginalDataForwarding.Modules.TCPListener
                     //管理連線池
                     DumpAndThrowDeadClient ( );
 
-                    //拿出要處理的工作
-                    var allPacketage = fCastingMessage.DequeueAll ( ).ToArray ( );
-                    if ( allPacketage.Length == 0 )
-                    {
-                        Thread.Sleep ( 10 );
-                    }
-                    else
+                    //改成一次取一包就打
+                    AckTask packetage;
+                    List<string> outputMessages;
+                    List<string> allOutputMessages = new List<string>();
+                    while ( fCastingMessage.TryDequeue( out packetage ) )
                     {
                         //廣播
-                        SendBroadcasting ( allPacketage );
+                        SendBroadcasting( packetage ,out outputMessages );
+
+                        if ( outputMessages.Count > 0 )
+                        {
+                            allOutputMessages.AddRange( outputMessages );
+                        }
                     }
+
+                    //工作都做完了再輸出訊息
+                    foreach ( string outputMessage in allOutputMessages )
+                    {
+                        fOutputMessage( outputMessage );
+                    }
+
+                    Thread.Sleep( 10 );                    
                 }
                 catch ( Exception e )
                 {
@@ -237,11 +259,14 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// <param name="message"></param>
         public void Broadcasting ( byte[ ] pkg , ushort dataType )
         {
-            fCastingMessage.Enqueue ( new AckTask ( )
+            var newTask = new AckTask()
             {
-                DataBytes = pkg ,
-                DataType = dataType
-            } );
+                DataBytes = pkg,
+                DataType = dataType,
+                StartTime = DateTime.Now           
+            };
+
+            fCastingMessage.Enqueue ( newTask );
         }
 
 
@@ -317,74 +342,82 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// <summary>
         /// 送出通知工作
         /// </summary>
-        /// <param name="successCount"></param>
-        private void SendBroadcasting ( params AckTask[ ] messages )
+        /// <param name="message">封包資料</param>
+        /// <param name="outputMessages">回傳輸出訊息</param>
+        private void SendBroadcasting ( AckTask message, out List<string> outputMessages )
         {
-            var taskStartTick = Environment.TickCount;
-            var usedTicks = new List<string> ( );
+            outputMessages = new List<string>();
 
+            Stopwatch watchTime = new Stopwatch();
+            watchTime.Start();
+            var usedTicks = new List<string>();
+            
             //打出通知
             int total = 0;
             int success = 0;
             int exceptionCount = 0;
-            foreach ( var data in messages )
+            Stopwatch taskWatch = new Stopwatch();
+            Stopwatch writeWatch = new Stopwatch();
+            foreach ( var item in fClientPool )
             {
-                foreach ( var item in fClientPool )
+                taskWatch.Restart();
+                string tickMessage = null;
+
+                try
                 {
-                    var sendBroadcastingTick = Environment.TickCount;
-                    string tickMessage = null;
-
-                    try
+                    if ( item.ClientSocket.Connected )
                     {
-                        if ( item.ClientSocket.Connected )
+                        //ACK
+                        total++;
+
+                        writeWatch.Restart();
+
+                        //發送資料
+                        if ( item.ClientStream.CanWrite )
                         {
+                            item.ClientStream.Write( message.DataBytes, 0, message.DataBytes.Length );
+
                             //ACK
-                            total++;
-
-                            int writeTick = Environment.TickCount;
-
-                            //發送資料
-                            if ( item.ClientStream.CanWrite )
-                            {
-                                item.ClientStream.Write ( data.DataBytes , 0 , data.DataBytes.Length );
-
-                                //ACK
-                                success++;
-                            }
-
-                            writeTick = Environment.TickCount - writeTick;
-
-                            //處理讀取資料(略過不做)
-                            if ( item.ClientStream.CanRead && item.ClientStream.DataAvailable )
-                            {
-                                //丟掉回傳資料
-                                item.ClientStream.Read ( fReadByte , 0 , fReadByte.Length );
-                            }
-
-                            tickMessage = string.Format ( "W:{0}" , writeTick );
+                            success++;
                         }
-                    }
-                    catch ( Exception e )
-                    {
-                        OnStatus.OnFireMessage ( e.ToString ( ) );
-                        exceptionCount++;
-                    }
 
-                    sendBroadcastingTick = Environment.TickCount - sendBroadcastingTick;
-                    usedTicks.Add ( string.Format ( "{0}[{1}]" , sendBroadcastingTick , tickMessage ?? "Exception" ) );
+                        writeWatch.Stop();
+
+                        //處理讀取資料(略過不做)
+                        if ( item.ClientStream.CanRead && item.ClientStream.DataAvailable )
+                        {
+                            //丟掉回傳資料
+                            item.ClientStream.Read( fReadByte, 0, fReadByte.Length );
+                        }
+
+                        tickMessage = string.Format( "W:{0}", writeWatch.ElapsedMilliseconds );
+                    }
+                }
+                catch ( Exception e )
+                {
+                    OnStatus.OnFireMessage( e.ToString() );
+                    exceptionCount++;
+                }
+
+                taskWatch.Stop();
+                if ( taskWatch.ElapsedMilliseconds > REASONABLE_TIME_GRID_BY_TASK )
+                {
+                    usedTicks.Add( string.Format( "{0}[{1}]", taskWatch.ElapsedMilliseconds, tickMessage ?? "Exception" ) );
                 }
             }
 
-            taskStartTick = Environment.TickCount - taskStartTick;
+            //取得工作建立到完成的時間間格
+            var taskTimeSpan = DateTime.Now - message.StartTime;
 
-            //如果單次轉發超過300ms就應該注意
-            if ( taskStartTick > 300 )
+            //如果單次轉發超過300ms就應該注意            
+            watchTime.Stop();
+            if ( watchTime.ElapsedMilliseconds > REASONABLE_TIME_GRID || taskTimeSpan.Milliseconds > REASONABLE_TIME_GRID )
             {
-                fOutputMessage ( string.Format ( "SendBroadcasting TaskTick : {0}" , taskStartTick ) );
-                fOutputMessage ( string.Format ( "TotalCount : {0} SuccessCount : {1} ExceptionCount : {2}" , total , success , exceptionCount ) );
-                fOutputMessage ( string.Format ( "UsedTicksList : {0}" , string.Join ( " , " , usedTicks ) ) );
+                outputMessages.Add( string.Format( "SendBroadcasting Milliseconds : {0}", watchTime.ElapsedMilliseconds ) );
+                outputMessages.Add( string.Format( "Task ExpendTime : {0}", taskTimeSpan.Milliseconds ) );
+                outputMessages.Add( string.Format( "TotalCount : {0} SuccessCount : {1} ExceptionCount : {2}", total, success, exceptionCount ) );
+                outputMessages.Add( string.Format( "UsedTicksList : {0}", string.Join( " , ", usedTicks ) ) );
             }
         }
-
     }
 }

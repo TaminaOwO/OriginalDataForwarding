@@ -114,11 +114,11 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\System\CMoney.Real.Dpsc\CMoney.Real.Dpsc.csproj">
+    <ProjectReference Include="..\..\CG_System\CMoney.Real.Dpsc\CMoney.Real.Dpsc.csproj">
       <Project>{159a7f3e-0a82-4a96-b864-5801a90160d5}</Project>
       <Name>CMoney.Real.Dpsc</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\WebDll\CMoney.WebBackend\CMoney.WebBackend.csproj">
+    <ProjectReference Include="..\..\CG_WebDll\CMoney.WebBackend\CMoney.WebBackend.csproj">
       <Project>{989a21e3-add5-42e7-96d5-0e5d53ef80d5}</Project>
       <Name>CMoney.WebBackend</Name>
     </ProjectReference>
