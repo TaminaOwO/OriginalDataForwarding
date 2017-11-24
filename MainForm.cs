@@ -154,7 +154,16 @@ namespace OriginalDataForwarding
         /// <param name="message"></param>
         private void OutMessages( string message )
         {
-            TextBox_Status.AppendText( string.Format( "[{0}] : {1}{2}", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ), message, Environment.NewLine ) );
+            if ( InvokeRequired )
+            {
+                this.Invoke( new Action<string>( OutMessages ), new object[] { message } );
+                return;
+            }
+            else
+            {
+                TextBox_Status.AppendText( string.Format( "[{0}] : {1}{2}", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ), message, Environment.NewLine ) );
+            }
+           
         }
 
         /// <summary>

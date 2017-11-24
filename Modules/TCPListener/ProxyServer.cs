@@ -238,6 +238,9 @@ namespace OriginalDataForwarding.Modules.TCPListener
                         fOutputMessage( outputMessage );
                     }
 
+                    //訊息打完後清除訊息清單
+                    allOutputMessages.Clear();
+
                     Thread.Sleep( 10 );                    
                 }
                 catch ( Exception e )
