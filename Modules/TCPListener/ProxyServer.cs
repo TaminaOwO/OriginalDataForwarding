@@ -226,7 +226,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
                         //廣播
                         SendBroadcasting( packetage ,out outputMessages );
 
-                        if ( outputMessages.Count > 0 )
+                        if ( outputMessages.Count > 0 && packetage.DataType != 0)
                         {
                             allOutputMessages.AddRange( outputMessages );
                         }
