@@ -174,6 +174,10 @@ namespace OriginalDataForwarding
         private void Timer_Repaint_Tick( object sender, EventArgs e )
         {
             Label_ClientCount.Text = fProxyServer.GetAvailableClinetCount().ToString();
+            label_MaxSendMs.Text = fProxyServer.GetMaxSendMs().ToString();
+            label_AvgSendMs.Text = fProxyServer.GetAvgSendMs().ToString();
+            label_SendCount.Text = fProxyServer.GetSendCount().ToString();
+
             Label_ForwardingCount.Text = fForwardModule.GetForwardingCount().ToString();
             Label_HeartCountDown.Text = fHeartbeat.GetHeartbeatRemainingSec().ToString( "0" );
             fBindingSource.ResetBindings( true );

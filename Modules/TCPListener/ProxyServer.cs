@@ -126,6 +126,21 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// </summary>
         private Action<string> fOutputMessage;
 
+        /// <summary>
+        /// 轉發數
+        /// </summary>
+        private int fSendCount = 0;
+
+        /// <summary>
+        /// 轉發時間總和
+        /// </summary>
+        private double fTotalSendMs = 0;
+
+        /// <summary>
+        /// 最大轉發時間
+        /// </summary>
+        private int fMaxSendMs = 0;
+
         #endregion
 
         #region 事件
@@ -283,6 +298,33 @@ namespace OriginalDataForwarding.Modules.TCPListener
         }
 
         /// <summary>
+        /// 取得最大轉發時間
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxSendMs ()
+        {
+            return fMaxSendMs;
+        }
+
+        /// <summary>
+        /// 取得平均轉發時間
+        /// </summary>
+        /// <returns></returns>
+        public double GetAvgSendMs ()
+        {
+            return fSendCount == 0 ? 0 : Math.Round( fTotalSendMs / fSendCount, 2, MidpointRounding.AwayFromZero );
+        }
+
+        /// <summary>
+        /// 取得轉發數
+        /// </summary>
+        /// <returns></returns>
+        public int GetSendCount ()
+        {
+            return fSendCount;
+        }
+
+        /// <summary>
         /// 取得有效的連線數
         /// </summary>
         /// <returns></returns>
@@ -411,13 +453,19 @@ namespace OriginalDataForwarding.Modules.TCPListener
 
             //取得工作建立到完成的時間間格
             var taskTimeSpan = DateTime.Now - message.StartTime;
+            if ( message.DataType != 0 )
+            {
+                fSendCount++;
+                fMaxSendMs = Math.Max( fMaxSendMs, taskTimeSpan.Milliseconds );
+                fTotalSendMs += taskTimeSpan.Milliseconds;
+            }
 
             //如果單次轉發超過300ms就應該注意            
             watchTime.Stop();
-            if ( watchTime.ElapsedMilliseconds > REASONABLE_TIME_GRID || taskTimeSpan.Milliseconds > REASONABLE_TIME_GRID )
+            if ( watchTime.ElapsedMilliseconds > REASONABLE_TIME_GRID)// || taskTimeSpan.Milliseconds > REASONABLE_TIME_GRID )
             {
                 outputMessages.Add( string.Format( "SendBroadcasting Milliseconds : {0}", watchTime.ElapsedMilliseconds ) );
-                outputMessages.Add( string.Format( "Task ExpendTime : {0}", taskTimeSpan.Milliseconds ) );
+                //outputMessages.Add( string.Format( "Task ExpendTime : {0}", taskTimeSpan.Milliseconds ) );
                 outputMessages.Add( string.Format( "TotalCount : {0} SuccessCount : {1} ExceptionCount : {2}", total, success, exceptionCount ) );
                 outputMessages.Add( string.Format( "UsedTicksList : {0}", string.Join( " , ", usedTicks ) ) );
             }

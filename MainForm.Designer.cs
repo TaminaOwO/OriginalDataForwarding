@@ -46,9 +46,15 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.DataGridView_Clients = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.button_GetAllClients = new System.Windows.Forms.Button();
-            this.checkedListBox_Clients = new System.Windows.Forms.CheckedListBox();
             this.button_RemoveClients = new System.Windows.Forms.Button();
+            this.checkedListBox_Clients = new System.Windows.Forms.CheckedListBox();
+            this.button_GetAllClients = new System.Windows.Forms.Button();
+            this.label_AvgSendMs = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label_MaxSendMs = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label_SendCount = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -84,6 +90,12 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label_SendCount);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.label_AvgSendMs);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.label_MaxSendMs);
+            this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.Label_ForwardingCount);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.Label_HeartCountDown);
@@ -92,7 +104,7 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(14, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(425, 45);
+            this.groupBox1.Size = new System.Drawing.Size(425, 60);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "狀態";
@@ -100,7 +112,7 @@
             // Label_ForwardingCount
             // 
             this.Label_ForwardingCount.AutoSize = true;
-            this.Label_ForwardingCount.Location = new System.Drawing.Point(217, 18);
+            this.Label_ForwardingCount.Location = new System.Drawing.Point(351, 18);
             this.Label_ForwardingCount.Name = "Label_ForwardingCount";
             this.Label_ForwardingCount.Size = new System.Drawing.Size(11, 12);
             this.Label_ForwardingCount.TabIndex = 0;
@@ -109,7 +121,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(161, 18);
+            this.label4.Location = new System.Drawing.Point(295, 18);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(50, 12);
             this.label4.TabIndex = 0;
@@ -118,7 +130,7 @@
             // Label_HeartCountDown
             // 
             this.Label_HeartCountDown.AutoSize = true;
-            this.Label_HeartCountDown.Location = new System.Drawing.Point(395, 18);
+            this.Label_HeartCountDown.Location = new System.Drawing.Point(226, 18);
             this.Label_HeartCountDown.Name = "Label_HeartCountDown";
             this.Label_HeartCountDown.Size = new System.Drawing.Size(11, 12);
             this.Label_HeartCountDown.TabIndex = 0;
@@ -127,7 +139,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(327, 18);
+            this.label3.Location = new System.Drawing.Point(158, 18);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(62, 12);
             this.label3.TabIndex = 0;
@@ -162,7 +174,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(10, 85);
+            this.tabControl1.Location = new System.Drawing.Point(10, 100);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(429, 145);
@@ -211,24 +223,6 @@
             this.tabPage3.Text = "Tool";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // button_GetAllClients
-            // 
-            this.button_GetAllClients.Location = new System.Drawing.Point(317, 9);
-            this.button_GetAllClients.Name = "button_GetAllClients";
-            this.button_GetAllClients.Size = new System.Drawing.Size(89, 19);
-            this.button_GetAllClients.TabIndex = 0;
-            this.button_GetAllClients.Text = "取得目前連線";
-            this.button_GetAllClients.UseVisualStyleBackColor = true;
-            this.button_GetAllClients.Click += new System.EventHandler(this.button_GetAllClients_Click);
-            // 
-            // checkedListBox_Clients
-            // 
-            this.checkedListBox_Clients.FormattingEnabled = true;
-            this.checkedListBox_Clients.Location = new System.Drawing.Point(18, 9);
-            this.checkedListBox_Clients.Name = "checkedListBox_Clients";
-            this.checkedListBox_Clients.Size = new System.Drawing.Size(279, 106);
-            this.checkedListBox_Clients.TabIndex = 1;
-            // 
             // button_RemoveClients
             // 
             this.button_RemoveClients.Location = new System.Drawing.Point(317, 96);
@@ -239,11 +233,83 @@
             this.button_RemoveClients.UseVisualStyleBackColor = true;
             this.button_RemoveClients.Click += new System.EventHandler(this.button_RemoveClients_Click);
             // 
+            // checkedListBox_Clients
+            // 
+            this.checkedListBox_Clients.FormattingEnabled = true;
+            this.checkedListBox_Clients.Location = new System.Drawing.Point(18, 9);
+            this.checkedListBox_Clients.Name = "checkedListBox_Clients";
+            this.checkedListBox_Clients.Size = new System.Drawing.Size(279, 106);
+            this.checkedListBox_Clients.TabIndex = 1;
+            // 
+            // button_GetAllClients
+            // 
+            this.button_GetAllClients.Location = new System.Drawing.Point(317, 9);
+            this.button_GetAllClients.Name = "button_GetAllClients";
+            this.button_GetAllClients.Size = new System.Drawing.Size(89, 19);
+            this.button_GetAllClients.TabIndex = 0;
+            this.button_GetAllClients.Text = "取得目前連線";
+            this.button_GetAllClients.UseVisualStyleBackColor = true;
+            this.button_GetAllClients.Click += new System.EventHandler(this.button_GetAllClients_Click);
+            // 
+            // label_AvgSendMs
+            // 
+            this.label_AvgSendMs.AutoSize = true;
+            this.label_AvgSendMs.Location = new System.Drawing.Point(242, 40);
+            this.label_AvgSendMs.Name = "label_AvgSendMs";
+            this.label_AvgSendMs.Size = new System.Drawing.Size(11, 12);
+            this.label_AvgSendMs.TabIndex = 1;
+            this.label_AvgSendMs.Text = "0";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(158, 40);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(86, 12);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "平均轉發時間 : ";
+            // 
+            // label_MaxSendMs
+            // 
+            this.label_MaxSendMs.AutoSize = true;
+            this.label_MaxSendMs.Location = new System.Drawing.Point(108, 40);
+            this.label_MaxSendMs.Name = "label_MaxSendMs";
+            this.label_MaxSendMs.Size = new System.Drawing.Size(11, 12);
+            this.label_MaxSendMs.TabIndex = 3;
+            this.label_MaxSendMs.Text = "0";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(16, 40);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(86, 12);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "最大轉發時間 : ";
+            // 
+            // label_SendCount
+            // 
+            this.label_SendCount.AutoSize = true;
+            this.label_SendCount.Location = new System.Drawing.Point(351, 40);
+            this.label_SendCount.Name = "label_SendCount";
+            this.label_SendCount.Size = new System.Drawing.Size(11, 12);
+            this.label_SendCount.TabIndex = 5;
+            this.label_SendCount.Text = "0";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(295, 40);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 12);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "送出數 : ";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(445, 234);
+            this.ClientSize = new System.Drawing.Size(445, 257);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.TextBox_DpscKeyId);
@@ -284,6 +350,12 @@
         private System.Windows.Forms.Button button_RemoveClients;
         private System.Windows.Forms.CheckedListBox checkedListBox_Clients;
         private System.Windows.Forms.Button button_GetAllClients;
+        private System.Windows.Forms.Label label_AvgSendMs;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label_MaxSendMs;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label_SendCount;
+        private System.Windows.Forms.Label label7;
     }
 }
 
