@@ -3,6 +3,7 @@ using OriginalDataForwarding.POCO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -424,7 +425,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
                         //發送資料
                         if ( item.ClientStream.CanWrite )
                         {
-                            item.ClientStream.Write( message.DataBytes, 0, message.DataBytes.Length );
+                            item.ClientStream.BeginWrite( message.DataBytes, 0, message.DataBytes.Length, null, null );
 
                             //ACK
                             success++;
@@ -436,11 +437,19 @@ namespace OriginalDataForwarding.Modules.TCPListener
                         if ( item.ClientStream.CanRead && item.ClientStream.DataAvailable )
                         {
                             //丟掉回傳資料
-                            item.ClientStream.Read( fReadByte, 0, fReadByte.Length );
+                            item.ClientStream.BeginRead( fReadByte, 0, fReadByte.Length, null, null );
                         }
 
                         tickMessage = string.Format( "W:{0}", writeWatch.ElapsedMilliseconds );
                     }
+                }
+                catch ( IOException ex )
+                {
+                    SocketException se = ex.InnerException as SocketException;
+                    int errorCode = se == null ? -1 : se.ErrorCode;
+                    outputMessages.Add( string.Format( "TcpEx：Send SocketErr={0} {1}", errorCode, item.Address) );
+                    OnStatus.OnFireMessage( ex.ToString() );
+                    exceptionCount++;
                 }
                 catch ( Exception e )
                 {

@@ -12,7 +12,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
             IPEndPoint ipep = client.Client.RemoteEndPoint as IPEndPoint;
             Address = ipep.Address.ToString();
             ClientStream = client.GetStream();
-            ConnectedStamp = DateTime.Now;
+            ConnectedStamp = DateTime.Now;            
         }
         
         /// <summary>
@@ -20,7 +20,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// </summary>
         public DateTime ConnectedStamp
         {
-            private set; get;
+            set; get;
         }
 
         /// <summary>

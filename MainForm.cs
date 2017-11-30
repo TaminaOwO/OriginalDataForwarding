@@ -142,9 +142,7 @@ namespace OriginalDataForwarding
         /// <param name="statusMessage"></param>
         private void fProxyServer_OnStatusMessage( string statusMessage )
         {
-            TextBox_Status.AppendText( string.Format( "[{0}]", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ) ) );
-            TextBox_Status.AppendText( statusMessage );
-            TextBox_Status.AppendText( "\r\n" );
+            TextBox_Status.AppendText( string.Format( "[{0}]{1}{2}", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ), statusMessage, Environment.NewLine ) );
         }
 
         /// <summary>
