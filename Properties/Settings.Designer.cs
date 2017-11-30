@@ -144,5 +144,17 @@ OptAfterHours: 9961
                 this["HeartBeatFrequency"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsKeepNewConnectionWhenOverLimit {
+            get {
+                return ((bool)(this["IsKeepNewConnectionWhenOverLimit"]));
+            }
+            set {
+                this["IsKeepNewConnectionWhenOverLimit"] = value;
+            }
+        }
     }
 }

@@ -19,10 +19,12 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 建構子
         /// </summary>
         /// <param name="socketPort"></param>
+        /// <param name="isKeepNewConnectionWhenOverLimit">是否保留新連線</param>
         /// <param name="outputMessage">輸出訊息</param>
-        public ProxyServer ( int socketPort , Action<string> outputMessage )
+        public ProxyServer ( int socketPort,bool isKeepNewConnectionWhenOverLimit, Action<string> outputMessage )
         {
             fOutputMessage = outputMessage;
+            fIsKeepNewConnectionWhenOverLimit = isKeepNewConnectionWhenOverLimit;
 
             // Listener worker
             fTcpListener = new TcpListener ( IPAddress.Any , socketPort );
@@ -145,6 +147,11 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 最大轉發時間
         /// </summary>
         private double fMaxSendMs = 0;
+
+        /// <summary>
+        /// 是否保留新連線
+        /// </summary>
+        private bool fIsKeepNewConnectionWhenOverLimit;
 
         #endregion
 
@@ -369,23 +376,47 @@ namespace OriginalDataForwarding.Modules.TCPListener
                 fClientPool.AddRange ( allNewConnections );
             }
 
-            // 超過限制數量的連線
-            var overLimitClients = fClientPool.Where ( x => x.ClientSocket.Connected )
-                                    .GroupBy ( x => x.Address ).ToDictionary ( x => x.Key , x => x.ToList ( ) )
-                                    .Where ( x => x.Value.Count > SAME_IP_LIMIT_COUNT )
-                                    .Select ( x => x.Value.LastOrDefault ( ) ).ToList ( );
-
             // 已斷線的連線
-            var disconnected = fClientPool.Where ( x => !x.ClientSocket.Connected ).ToList ( );
+            var disconnecteds = fClientPool.Where( x => !x.ClientSocket.Connected ).ToList();
+
+            // 超過限制數量的連線
+            List<ProxyClient> overLimitClients;
+            if ( fIsKeepNewConnectionWhenOverLimit )
+            {
+                overLimitClients = fClientPool
+                    .Where( x => x.ClientSocket.Connected )
+                    .GroupBy( x => x.Address )
+                    .Where( x => x.Count() > SAME_IP_LIMIT_COUNT )
+                    .SelectMany( x => x.OrderByDescending( xx => xx.ConnectedStamp ).Skip( SAME_IP_LIMIT_COUNT ) )
+                    .ToList();
+            }
+            else
+            {
+                overLimitClients = fClientPool
+                    .Where( x => x.ClientSocket.Connected )
+                    .GroupBy( x => x.Address )
+                    .Where( x => x.Count() > SAME_IP_LIMIT_COUNT )
+                    .SelectMany( x => x.OrderBy( xx => xx.ConnectedStamp ).Skip( SAME_IP_LIMIT_COUNT ) )
+                    .ToList();
+            }
 
             // 丟掉不要的連線
-            foreach ( var item in disconnected.Concat ( overLimitClients ).Distinct ( ) )
+            removeConnections( disconnecteds.Union( overLimitClients ).ToList() );
+        }
+
+        /// <summary>
+        /// 移除連線
+        /// </summary>
+        /// <param name="connections">要移除的連線清單</param>
+        private void removeConnections (List<ProxyClient> connections)
+        {
+            foreach ( var item in connections )
             {
                 // 紀錄斷線LOG
-                OnConnectionStatus.OnFireMessage ( item );
+                OnConnectionStatus.OnFireMessage( item );
 
-                fClientPool.Remove ( item );
-                OnStatus.OnFireMessage ( string.Format ( "Clinet斷線[{0}]" , item.Address ) );
+                fClientPool.Remove( item );
+                OnStatus.OnFireMessage( string.Format( "Clinet斷線[{0}]", item.Address ) );
             }
         }
 

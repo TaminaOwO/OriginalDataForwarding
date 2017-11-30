@@ -35,7 +35,7 @@ namespace OriginalDataForwarding
             // dataGridView 錯誤處理 (不然會跳exception)
             DataGridView_Clients.DataError += DataGridView_Clients_DataError;
 
-            fProxyServer = new ProxyServer( fSetting.MulticastPort , OutMessages );
+            fProxyServer = new ProxyServer( fSetting.MulticastPort, fSetting.IsKeepNewConnectionWhenOverLimit, OutMessages );
             fProxyServer.OnStatus.OnFireEvent += fProxyServer_OnStatusMessage;
 
             // 心跳封包樣本
