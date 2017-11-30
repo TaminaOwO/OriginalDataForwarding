@@ -53,7 +53,6 @@ namespace OriginalDataForwarding
             fBindingSource = new BindingSource();
             fBindingSource.DataSource = fProxyServer.GetAvailableClinets();
             DataGridView_Clients.DataSource = fBindingSource;
-
         }
 
         #region 變數
@@ -162,8 +161,7 @@ namespace OriginalDataForwarding
             else
             {
                 TextBox_Status.AppendText( string.Format( "[{0}] : {1}{2}", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ), message, Environment.NewLine ) );
-            }
-           
+            }           
         }
 
         /// <summary>
@@ -173,15 +171,21 @@ namespace OriginalDataForwarding
         /// <param name="e"></param>
         private void Timer_Repaint_Tick( object sender, EventArgs e )
         {
-            Label_ClientCount.Text = fProxyServer.GetAvailableClinetCount().ToString();
-            label_MaxSendMs.Text = fProxyServer.GetMaxSendMs().ToString();
-            label_AvgSendMs.Text = fProxyServer.GetAvgSendMs().ToString();
-            label_SendCount.Text = fProxyServer.GetSendCount().ToString();
+            if ( tabControl1.SelectedTab == tabPage_Statu )
+            {
+                Label_ClientCount.Text = fProxyServer.GetAvailableClinetCount().ToString();
+                label_MaxSendMs.Text = fProxyServer.GetMaxSendMs().ToString();
+                label_AvgSendMs.Text = fProxyServer.GetAvgSendMs().ToString();
+                label_SendCount.Text = fProxyServer.GetSendCount().ToString();
 
-            Label_ForwardingCount.Text = fForwardModule.GetForwardingCount().ToString();
-            Label_HeartCountDown.Text = fHeartbeat.GetHeartbeatRemainingSec().ToString( "0" );
-            fBindingSource.ResetBindings( true );
-            DataGridView_Clients.AutoResizeColumns();
+                Label_ForwardingCount.Text = fForwardModule.GetForwardingCount().ToString();
+                Label_HeartCountDown.Text = fHeartbeat.GetHeartbeatRemainingSec().ToString( "0" );
+            }
+            else if ( tabControl1.SelectedTab == tabPage2 )
+            {
+                fBindingSource.ResetBindings( true );
+                DataGridView_Clients.AutoResizeColumns();
+            }
         }
 
         /// <summary>

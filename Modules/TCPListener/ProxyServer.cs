@@ -45,6 +45,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
             // boradcastor
             fBroadcastor = Task.Factory.StartNew ( BroadcastingAsync , fToken.Token );
         }
+
         ~ProxyServer ( )
         {
             Dispose ( );
@@ -94,7 +95,10 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// </summary>
         private CancellationTokenSource fToken;
 
-        private byte[ ] fReadByte = new byte[ 4194304 ];
+        /// <summary>
+        /// 讀取用暫存陣列
+        /// </summary>
+        private byte[ ] fReadByte = new byte[ 4 * 1024 * 1024 ];
 
         /// <summary>
         /// listener
@@ -139,7 +143,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// <summary>
         /// 最大轉發時間
         /// </summary>
-        private int fMaxSendMs = 0;
+        private double fMaxSendMs = 0;
 
         #endregion
 
@@ -301,9 +305,9 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 取得最大轉發時間
         /// </summary>
         /// <returns></returns>
-        public int GetMaxSendMs ()
+        public double GetMaxSendMs ()
         {
-            return fMaxSendMs;
+            return Math.Round( fMaxSendMs, 2, MidpointRounding.AwayFromZero );
         }
 
         /// <summary>
@@ -332,7 +336,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
         {
             return fClientPool;
         }
-
+        
         /// <summary>
         /// 踢出指定連線
         /// </summary>
@@ -358,10 +362,10 @@ namespace OriginalDataForwarding.Modules.TCPListener
         private void DumpAndThrowDeadClient ( )
         {
             // 拿出連線的
-            var allConnection = fClientTmpQueue.DequeueAll ( );
-            if ( allConnection.Count != 0 )
+            var allNewConnections = fClientTmpQueue.DequeueAll ( );
+            if ( allNewConnections.Count != 0 )
             {
-                fClientPool.AddRange ( allConnection );
+                fClientPool.AddRange ( allNewConnections );
             }
 
             // 超過限制數量的連線
@@ -456,16 +460,16 @@ namespace OriginalDataForwarding.Modules.TCPListener
             if ( message.DataType != 0 )
             {
                 fSendCount++;
-                fMaxSendMs = Math.Max( fMaxSendMs, taskTimeSpan.Milliseconds );
-                fTotalSendMs += taskTimeSpan.Milliseconds;
+                fMaxSendMs = Math.Max( fMaxSendMs, taskTimeSpan.TotalMilliseconds );
+                fTotalSendMs += taskTimeSpan.TotalMilliseconds;
             }
 
             //如果單次轉發超過300ms就應該注意            
             watchTime.Stop();
-            if ( watchTime.ElapsedMilliseconds > REASONABLE_TIME_GRID)// || taskTimeSpan.Milliseconds > REASONABLE_TIME_GRID )
+            if ( watchTime.ElapsedMilliseconds > REASONABLE_TIME_GRID )// || taskTimeSpan.TotalMilliseconds > REASONABLE_TIME_GRID )
             {
                 outputMessages.Add( string.Format( "SendBroadcasting Milliseconds : {0}", watchTime.ElapsedMilliseconds ) );
-                //outputMessages.Add( string.Format( "Task ExpendTime : {0}", taskTimeSpan.Milliseconds ) );
+                //outputMessages.Add( string.Format( "Task ExpendTime : {0}", taskTimeSpan.TotalMilliseconds ) );
                 outputMessages.Add( string.Format( "TotalCount : {0} SuccessCount : {1} ExceptionCount : {2}", total, success, exceptionCount ) );
                 outputMessages.Add( string.Format( "UsedTicksList : {0}", string.Join( " , ", usedTicks ) ) );
             }
