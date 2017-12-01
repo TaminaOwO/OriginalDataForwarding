@@ -53,7 +53,7 @@ OptAfterHours: 9961
       <Value Profile="(Default)">30</Value>
     </Setting>
     <Setting Name="IsKeepNewConnectionWhenOverLimit" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>
