@@ -1,4 +1,5 @@
 ﻿using CMoney.WebBackend.ProjectsLayer.Components;
+using OriginalDataForwarding.Modules.VariableClass;
 using OriginalDataForwarding.POCO;
 using System;
 using System.Collections.Generic;
@@ -153,6 +154,16 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// </summary>
         private bool fIsKeepNewConnectionWhenOverLimit;
 
+        /// <summary>
+        /// 心跳封包
+        /// </summary>
+        private byte[] fHeartbeatBytes;
+
+        /// <summary>
+        /// 心跳封包類型
+        /// </summary>
+        private ushort fHeartbeatDataType;
+
         #endregion
 
         #region 事件
@@ -299,6 +310,16 @@ namespace OriginalDataForwarding.Modules.TCPListener
             fCastingMessage.Enqueue ( newTask );
         }
 
+        /// <summary>
+        /// 設定心跳封包
+        /// </summary>
+        /// <param name="heartbeatBytes">心跳封包</param>
+        /// <param name="heartbeatDataType">心跳封包類型</param>
+        public void SetHeartBeatPackage ( byte[] heartbeatBytes, ushort heartbeatDataType )
+        {
+            fHeartbeatBytes = heartbeatBytes;
+            fHeartbeatDataType = heartbeatDataType;
+        }
 
         /// <summary>
         /// 取得有效的連線數
@@ -377,31 +398,101 @@ namespace OriginalDataForwarding.Modules.TCPListener
             }
 
             // 已斷線的連線
-            var disconnecteds = fClientPool.Where( x => !x.ClientSocket.Connected ).ToList();
+            var disconnectedClients = fClientPool.Where( x => !x.ClientSocket.Connected ).ToList();
 
-            // 超過限制數量的連線
-            List<ProxyClient> overLimitClients;
-            if ( fIsKeepNewConnectionWhenOverLimit )
+            //取出有效連線超過指定數量的Ip連線群組
+            var overLimitAddressGroupClients = fClientPool
+                .Where( x => x.ClientSocket.Connected ) //看起來還活著的連線
+                .GroupBy( x => x.Address ) //根據Ip分組
+                .Where( x => x.Count() > SAME_IP_LIMIT_COUNT ) //取出超過連線數的
+                .ToDictionary( x => x.Key, x => x.ToList() );
+
+            #region 對所有超過連線數量的Ip檢測有效連線，保留最新(or最舊)的指定連線數
+
+            //還沒設定心跳包的話就不打
+            List<ProxyClient> overLimitClients = new List<ProxyClient>();
+            if ( fHeartbeatBytes != null )
             {
-                overLimitClients = fClientPool
-                    .Where( x => x.ClientSocket.Connected )
-                    .GroupBy( x => x.Address )
-                    .Where( x => x.Count() > SAME_IP_LIMIT_COUNT )
-                    .SelectMany( x => x.OrderByDescending( xx => xx.ConnectedStamp ).Skip( SAME_IP_LIMIT_COUNT ) )
-                    .ToList();
+                //心跳包
+                var packetage = new AckTask()
+                {
+                    DataBytes = fHeartbeatBytes,
+                    DataType = fHeartbeatDataType,
+                    StartTime = DateTime.Now
+                };
+
+                string tickMessage; //這裡用不到
+                Stopwatch writeWatch = new Stopwatch(); //這裡用不到
+                List<string> outputMessages = new List<string>(); //這裡用不到
+                foreach ( var addressGroupClients in overLimitAddressGroupClients )
+                {
+                    var clients = addressGroupClients.Value;
+                    var needRemoveClientCount = clients.Count - SAME_IP_LIMIT_COUNT;
+
+                    #region 對所有的Client檢測連線是否有效
+
+                    var failClients = new List<ProxyClient>();
+                    var successClients = new List<ProxyClient>();
+                    foreach ( var client in clients )
+                    {
+                        //打心跳封包檢測連線是否有效
+                        bool isWriteSuccess = sendBroadcastingToClient( client, packetage, writeWatch, null, outputMessages, out tickMessage );
+                        if ( isWriteSuccess )
+                        {
+                            successClients.Add( client );
+                        }
+                        else
+                        {
+                            failClients.Add( client );
+                        }
+                    }
+
+                    #endregion
+
+                    #region 先踢掉無效的連線
+
+                    var needRemoveClients = new List<ProxyClient>();
+                    if ( failClients.Count > 0 )
+                    {
+                        needRemoveClients.AddRange( failClients );
+                    }
+
+                    #endregion
+
+                    #region 如果還不夠就取有效連線來踢
+
+                    if ( needRemoveClients.Count < needRemoveClientCount )
+                    {
+                        //還需要補踢的連線數
+                        var needRemoveSuccessClientCount = needRemoveClientCount - needRemoveClients.Count;
+
+                        if ( fIsKeepNewConnectionWhenOverLimit )
+                        {
+                            //從舊的開始踢
+                            needRemoveClients.AddRange( successClients.OrderBy( x => x.ConnectedStamp ).Take( needRemoveSuccessClientCount ) );
+                        }
+                        else
+                        {
+                            //從新的開始踢
+                            needRemoveClients.AddRange( successClients.OrderByDescending( x => x.ConnectedStamp ).Take( needRemoveSuccessClientCount ) );
+                        }
+                    }
+
+                    #endregion
+
+                    //加總到要踢的連線集合
+                    overLimitClients.AddRange( needRemoveClients );
+                }
             }
-            else
-            {
-                overLimitClients = fClientPool
-                    .Where( x => x.ClientSocket.Connected )
-                    .GroupBy( x => x.Address )
-                    .Where( x => x.Count() > SAME_IP_LIMIT_COUNT )
-                    .SelectMany( x => x.OrderBy( xx => xx.ConnectedStamp ).Skip( SAME_IP_LIMIT_COUNT ) )
-                    .ToList();
-            }
+
+            #endregion
 
             // 丟掉不要的連線
-            removeConnections( disconnecteds.Union( overLimitClients ).ToList() );
+            var allNeedRemoveClients = disconnectedClients.Union( overLimitClients ).ToList();
+            if ( allNeedRemoveClients.Count > 0 )
+            {
+                removeConnections( allNeedRemoveClients );
+            }
         }
 
         /// <summary>
@@ -432,60 +523,21 @@ namespace OriginalDataForwarding.Modules.TCPListener
             Stopwatch watchTime = new Stopwatch();
             watchTime.Start();
             var usedTicks = new List<string>();
-            
+
             //打出通知
-            int total = 0;
-            int success = 0;
-            int exceptionCount = 0;
+            SendStatistics statistics = new SendStatistics();
             Stopwatch taskWatch = new Stopwatch();
             Stopwatch writeWatch = new Stopwatch();
-            foreach ( var item in fClientPool )
+            var needRemoveClients = new List<ProxyClient>();
+            foreach ( var client in fClientPool )
             {
                 taskWatch.Restart();
-                string tickMessage = null;
 
-                try
+                string tickMessage;
+                bool isWriteSuccess = sendBroadcastingToClient( client, message, writeWatch, statistics, outputMessages, out tickMessage );
+                if ( !isWriteSuccess )
                 {
-                    if ( item.ClientSocket.Connected )
-                    {
-                        //ACK
-                        total++;
-
-                        writeWatch.Restart();
-
-                        //發送資料
-                        if ( item.ClientStream.CanWrite )
-                        {
-                            item.ClientStream.BeginWrite( message.DataBytes, 0, message.DataBytes.Length, null, null );
-
-                            //ACK
-                            success++;
-                        }
-
-                        writeWatch.Stop();
-
-                        //處理讀取資料(略過不做)
-                        if ( item.ClientStream.CanRead && item.ClientStream.DataAvailable )
-                        {
-                            //丟掉回傳資料
-                            item.ClientStream.BeginRead( fReadByte, 0, fReadByte.Length, null, null );
-                        }
-
-                        tickMessage = string.Format( "W:{0}", writeWatch.ElapsedMilliseconds );
-                    }
-                }
-                catch ( IOException ex )
-                {
-                    SocketException se = ex.InnerException as SocketException;
-                    int errorCode = se == null ? -1 : se.ErrorCode;
-                    outputMessages.Add( string.Format( "TcpEx：Send SocketErr={0} {1}", errorCode, item.Address) );
-                    OnStatus.OnFireMessage( ex.ToString() );
-                    exceptionCount++;
-                }
-                catch ( Exception e )
-                {
-                    OnStatus.OnFireMessage( e.ToString() );
-                    exceptionCount++;
+                    needRemoveClients.Add( client );
                 }
 
                 taskWatch.Stop();
@@ -506,13 +558,97 @@ namespace OriginalDataForwarding.Modules.TCPListener
 
             //如果單次轉發超過300ms就應該注意            
             watchTime.Stop();
-            if ( watchTime.ElapsedMilliseconds > REASONABLE_TIME_GRID )// || taskTimeSpan.TotalMilliseconds > REASONABLE_TIME_GRID )
+            if ( watchTime.ElapsedMilliseconds > REASONABLE_TIME_GRID )
             {
                 outputMessages.Add( string.Format( "SendBroadcasting Milliseconds : {0}", watchTime.ElapsedMilliseconds ) );
-                //outputMessages.Add( string.Format( "Task ExpendTime : {0}", taskTimeSpan.TotalMilliseconds ) );
-                outputMessages.Add( string.Format( "TotalCount : {0} SuccessCount : {1} ExceptionCount : {2}", total, success, exceptionCount ) );
+                outputMessages.Add( string.Format( "TotalCount : {0} SuccessCount : {1} ExceptionCount : {2}", statistics.TotalSendCount, statistics.SuccessSendCount, statistics.ExceptionSendCount ) );
                 outputMessages.Add( string.Format( "UsedTicksList : {0}", string.Join( " , ", usedTicks ) ) );
             }
+
+            //移除無效連線
+            if ( needRemoveClients.Count > 0 )
+            {
+                removeConnections( needRemoveClients );
+            }
         }
+
+        /// <summary>
+        /// 發送封包到客端
+        /// </summary>
+        /// <param name="client">客端資訊</param>
+        /// <param name="message">轉發封包資訊</param>
+        /// <param name="writeWatch">封包送出時間監視器</param>
+        /// <param name="statistics">發送統計資訊</param>
+        /// <param name="outputMessages">輸出訊息清單</param>
+        /// <param name="tickMessage">發送的時間訊息</param>
+        /// <returns>是否發送成功</returns>
+        private bool sendBroadcastingToClient ( ProxyClient client, AckTask message, Stopwatch writeWatch, SendStatistics statistics, List<string> outputMessages, out string tickMessage )
+        {
+            bool isSuccess = false;
+            tickMessage = null;
+
+            try
+            {
+                if ( client.ClientSocket.Connected )
+                {
+                    //ACK
+                    if ( statistics!= null )
+                    {
+                        statistics.TotalSendCount++;
+                    }
+
+                    writeWatch.Restart();
+
+                    //發送資料
+                    if ( client.ClientStream.CanWrite )
+                    {
+                        client.ClientStream.BeginWrite( message.DataBytes, 0, message.DataBytes.Length, null, null );
+
+                        isSuccess = true;
+
+                        //ACK
+                        if ( statistics != null )
+                        {
+                            statistics.SuccessSendCount++;
+                        }
+                    }
+
+                    writeWatch.Stop();
+
+                    //處理讀取資料(略過不做)
+                    if ( client.ClientStream.CanRead && client.ClientStream.DataAvailable )
+                    {
+                        //丟掉回傳資料
+                        client.ClientStream.BeginRead( fReadByte, 0, fReadByte.Length, null, null );
+                    }
+
+                    tickMessage = string.Format( "W:{0}", writeWatch.ElapsedMilliseconds );
+                }
+            }
+            catch ( IOException ex )
+            {
+                SocketException se = ex.InnerException as SocketException;
+                int errorCode = se == null ? -1 : se.ErrorCode;
+                outputMessages.Add( string.Format( "TcpEx：Send SocketErr={0} {1}", errorCode, client.Address ) );
+                OnStatus.OnFireMessage( ex.ToString() );
+
+                if ( statistics != null )
+                {
+                    statistics.ExceptionSendCount++;
+                }
+            }
+            catch ( Exception e )
+            {
+                OnStatus.OnFireMessage( e.ToString() );
+
+                if ( statistics != null )
+                {
+                    statistics.ExceptionSendCount++;
+                }
+            }
+
+            return isSuccess;
+        }
+        
     }
 }

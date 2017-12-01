@@ -45,6 +45,6 @@ namespace OriginalDataForwarding.Modules.TCPListener
         public NetworkStream ClientStream
         {
             set; get;
-        }        
+        }
     }
 }

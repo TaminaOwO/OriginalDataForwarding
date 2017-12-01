@@ -80,6 +80,7 @@
     <Compile Include="Modules\ForwardModule.cs" />
     <Compile Include="Modules\TCPListener\ProxyClient.cs" />
     <Compile Include="Modules\TCPListener\ProxyServer.cs" />
+    <Compile Include="Modules\VariableClass\SendStatistics.cs" />
     <Compile Include="POCO\AckTask.cs" />
     <Compile Include="POCO\TelegramHeartbeat.cs" />
     <Compile Include="Program.cs" />

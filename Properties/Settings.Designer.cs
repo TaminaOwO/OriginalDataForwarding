@@ -25,7 +25,7 @@ namespace OriginalDataForwarding.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("192.168.10.238")]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
         public string DpscIp {
             get {
                 return ((string)(this["DpscIp"]));
@@ -135,7 +135,7 @@ OptAfterHours: 9961
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public int HeartBeatFrequency {
             get {
                 return ((int)(this["HeartBeatFrequency"]));

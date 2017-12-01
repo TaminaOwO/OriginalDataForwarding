@@ -41,6 +41,8 @@ namespace OriginalDataForwarding
             // 心跳封包樣本
             fHeartbeat = new Heartbeat( new TimeSpan( 0, 0, fSetting.HeartBeatFrequency ), fProxyServer.Broadcasting );
 
+            fProxyServer.SetHeartBeatPackage( fHeartbeat.HeartbeatBytes, Heartbeat.HEART_BEAT_DATA_TYPE );
+
             //發送模組
             fForwardModule = new ForwardModule( originKey, 
                                                 fSetting.DpscIp, fSetting.DpscPort, fSetting.DpscChk,
