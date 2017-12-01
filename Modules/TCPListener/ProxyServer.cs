@@ -600,9 +600,18 @@ namespace OriginalDataForwarding.Modules.TCPListener
                     writeWatch.Restart();
 
                     //發送資料
-                    if ( client.ClientStream.CanWrite )
+                    var stream = client.ClientStream;
+                    if ( stream.CanWrite )
                     {
-                        client.ClientStream.BeginWrite( message.DataBytes, 0, message.DataBytes.Length, null, null );
+                        //是心跳包就直接打
+                        if ( message.DataType == fHeartbeatDataType )
+                        {
+                            stream.Write( message.DataBytes, 0, message.DataBytes.Length );
+                        }
+                        else
+                        {
+                            stream.BeginWrite( message.DataBytes, 0, message.DataBytes.Length, null, null );
+                        }
 
                         isSuccess = true;
 
@@ -616,10 +625,18 @@ namespace OriginalDataForwarding.Modules.TCPListener
                     writeWatch.Stop();
 
                     //處理讀取資料(略過不做)
-                    if ( client.ClientStream.CanRead && client.ClientStream.DataAvailable )
+                    if ( stream.CanRead && stream.DataAvailable )
                     {
-                        //丟掉回傳資料
-                        client.ClientStream.BeginRead( fReadByte, 0, fReadByte.Length, null, null );
+                        //先接起來之後再處理
+                        //是心跳包就直接打
+                        if ( message.DataType == fHeartbeatDataType )
+                        {
+                            stream.Read( fReadByte, 0, fReadByte.Length );
+                        }
+                        else
+                        {
+                            stream.BeginRead( fReadByte, 0, fReadByte.Length, null, null );
+                        }
                     }
 
                     tickMessage = string.Format( "W:{0}", writeWatch.ElapsedMilliseconds );
@@ -632,6 +649,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
                 outputMessages.Add( string.Format( "TcpEx：Send SocketErr={0} {1}", errorCode, client.Address ) );
                 OnStatus.OnFireMessage( ex.ToString() );
 
+                isSuccess = false;
                 if ( statistics != null )
                 {
                     statistics.ExceptionSendCount++;
@@ -641,6 +659,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
             {
                 OnStatus.OnFireMessage( e.ToString() );
 
+                isSuccess = false;
                 if ( statistics != null )
                 {
                     statistics.ExceptionSendCount++;
