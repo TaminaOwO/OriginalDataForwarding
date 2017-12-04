@@ -175,7 +175,9 @@ namespace OriginalDataForwarding
             {
                 Label_ClientCount.Text = fProxyServer.GetAvailableClinetCount().ToString();
                 label_MaxSendMs.Text = fProxyServer.GetMaxSendMs().ToString();
+                label_MaxSendTimeStamp.Text = fProxyServer.GetMaxSendMsTimeStamp();
                 label_AvgSendMs.Text = fProxyServer.GetAvgSendMs().ToString();
+                label_LastSendTime.Text = fProxyServer.GetLastSendMs().ToString();
                 label_SendCount.Text = fProxyServer.GetSendCount().ToString();
 
                 Label_ForwardingCount.Text = fForwardModule.GetForwardingCount().ToString();

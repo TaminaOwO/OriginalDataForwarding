@@ -36,31 +36,35 @@
             this.Timer_Repaint = new System.Windows.Forms.Timer(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage_Statu = new System.Windows.Forms.TabPage();
+            this.label_AvgSendMs = new System.Windows.Forms.Label();
+            this.label_SendCount = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label_MaxSendMs = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.Label_ClientCount = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.Label_HeartCountDown = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.Label_ForwardingCount = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.DataGridView_Clients = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.button_RemoveClients = new System.Windows.Forms.Button();
             this.checkedListBox_Clients = new System.Windows.Forms.CheckedListBox();
             this.button_GetAllClients = new System.Windows.Forms.Button();
-            this.tabPage_Statu = new System.Windows.Forms.TabPage();
-            this.label2 = new System.Windows.Forms.Label();
-            this.Label_ClientCount = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.Label_HeartCountDown = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.Label_ForwardingCount = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label_MaxSendMs = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label_AvgSendMs = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label_SendCount = new System.Windows.Forms.Label();
+            this.label_MaxSendTimeStamp = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label_LastSendTime = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage_Statu.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_Clients)).BeginInit();
             this.tabPage3.SuspendLayout();
-            this.tabPage_Statu.SuspendLayout();
             this.SuspendLayout();
             // 
             // TextBox_Status
@@ -116,6 +120,140 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "訊息";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage_Statu
+            // 
+            this.tabPage_Statu.Controls.Add(this.label_LastSendTime);
+            this.tabPage_Statu.Controls.Add(this.label11);
+            this.tabPage_Statu.Controls.Add(this.label_MaxSendTimeStamp);
+            this.tabPage_Statu.Controls.Add(this.label9);
+            this.tabPage_Statu.Controls.Add(this.label_AvgSendMs);
+            this.tabPage_Statu.Controls.Add(this.label_SendCount);
+            this.tabPage_Statu.Controls.Add(this.label6);
+            this.tabPage_Statu.Controls.Add(this.label2);
+            this.tabPage_Statu.Controls.Add(this.label_MaxSendMs);
+            this.tabPage_Statu.Controls.Add(this.label7);
+            this.tabPage_Statu.Controls.Add(this.label8);
+            this.tabPage_Statu.Controls.Add(this.Label_ClientCount);
+            this.tabPage_Statu.Controls.Add(this.label3);
+            this.tabPage_Statu.Controls.Add(this.Label_HeartCountDown);
+            this.tabPage_Statu.Controls.Add(this.label4);
+            this.tabPage_Statu.Controls.Add(this.Label_ForwardingCount);
+            this.tabPage_Statu.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_Statu.Name = "tabPage_Statu";
+            this.tabPage_Statu.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_Statu.Size = new System.Drawing.Size(421, 185);
+            this.tabPage_Statu.TabIndex = 3;
+            this.tabPage_Statu.Text = "狀態";
+            this.tabPage_Statu.UseVisualStyleBackColor = true;
+            // 
+            // label_AvgSendMs
+            // 
+            this.label_AvgSendMs.AutoSize = true;
+            this.label_AvgSendMs.Location = new System.Drawing.Point(86, 115);
+            this.label_AvgSendMs.Name = "label_AvgSendMs";
+            this.label_AvgSendMs.Size = new System.Drawing.Size(11, 12);
+            this.label_AvgSendMs.TabIndex = 1;
+            this.label_AvgSendMs.Text = "0";
+            // 
+            // label_SendCount
+            // 
+            this.label_SendCount.AutoSize = true;
+            this.label_SendCount.Location = new System.Drawing.Point(255, 40);
+            this.label_SendCount.Name = "label_SendCount";
+            this.label_SendCount.Size = new System.Drawing.Size(11, 12);
+            this.label_SendCount.TabIndex = 5;
+            this.label_SendCount.Text = "0";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(5, 115);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(75, 12);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "AvgUseTime : ";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(5, 10);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(74, 12);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "有效連線數 : ";
+            // 
+            // label_MaxSendMs
+            // 
+            this.label_MaxSendMs.AutoSize = true;
+            this.label_MaxSendMs.Location = new System.Drawing.Point(87, 70);
+            this.label_MaxSendMs.Name = "label_MaxSendMs";
+            this.label_MaxSendMs.Size = new System.Drawing.Size(11, 12);
+            this.label_MaxSendMs.TabIndex = 3;
+            this.label_MaxSendMs.Text = "0";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(199, 40);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 12);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "送出數 : ";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(5, 70);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(76, 12);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "MaxUseTime : ";
+            // 
+            // Label_ClientCount
+            // 
+            this.Label_ClientCount.AutoSize = true;
+            this.Label_ClientCount.Location = new System.Drawing.Point(85, 12);
+            this.Label_ClientCount.Name = "Label_ClientCount";
+            this.Label_ClientCount.Size = new System.Drawing.Size(11, 12);
+            this.Label_ClientCount.TabIndex = 0;
+            this.Label_ClientCount.Text = "0";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(5, 40);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(62, 12);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "心跳倒數 : ";
+            // 
+            // Label_HeartCountDown
+            // 
+            this.Label_HeartCountDown.AutoSize = true;
+            this.Label_HeartCountDown.Location = new System.Drawing.Point(73, 40);
+            this.Label_HeartCountDown.Name = "Label_HeartCountDown";
+            this.Label_HeartCountDown.Size = new System.Drawing.Size(11, 12);
+            this.Label_HeartCountDown.TabIndex = 0;
+            this.Label_HeartCountDown.Text = "0";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(199, 10);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(50, 12);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "轉發數 : ";
+            // 
+            // Label_ForwardingCount
+            // 
+            this.Label_ForwardingCount.AutoSize = true;
+            this.Label_ForwardingCount.Location = new System.Drawing.Point(255, 10);
+            this.Label_ForwardingCount.Name = "Label_ForwardingCount";
+            this.Label_ForwardingCount.Size = new System.Drawing.Size(11, 12);
+            this.Label_ForwardingCount.TabIndex = 0;
+            this.Label_ForwardingCount.Text = "0";
             // 
             // tabPage2
             // 
@@ -177,135 +315,41 @@
             this.button_GetAllClients.UseVisualStyleBackColor = true;
             this.button_GetAllClients.Click += new System.EventHandler(this.button_GetAllClients_Click);
             // 
-            // tabPage_Statu
+            // label_MaxSendTimeStamp
             // 
-            this.tabPage_Statu.Controls.Add(this.label_AvgSendMs);
-            this.tabPage_Statu.Controls.Add(this.label_SendCount);
-            this.tabPage_Statu.Controls.Add(this.label6);
-            this.tabPage_Statu.Controls.Add(this.label2);
-            this.tabPage_Statu.Controls.Add(this.label_MaxSendMs);
-            this.tabPage_Statu.Controls.Add(this.label7);
-            this.tabPage_Statu.Controls.Add(this.label8);
-            this.tabPage_Statu.Controls.Add(this.Label_ClientCount);
-            this.tabPage_Statu.Controls.Add(this.label3);
-            this.tabPage_Statu.Controls.Add(this.Label_HeartCountDown);
-            this.tabPage_Statu.Controls.Add(this.label4);
-            this.tabPage_Statu.Controls.Add(this.Label_ForwardingCount);
-            this.tabPage_Statu.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_Statu.Name = "tabPage_Statu";
-            this.tabPage_Statu.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_Statu.Size = new System.Drawing.Size(421, 185);
-            this.tabPage_Statu.TabIndex = 3;
-            this.tabPage_Statu.Text = "狀態";
-            this.tabPage_Statu.UseVisualStyleBackColor = true;
+            this.label_MaxSendTimeStamp.AutoSize = true;
+            this.label_MaxSendTimeStamp.Location = new System.Drawing.Point(87, 85);
+            this.label_MaxSendTimeStamp.Name = "label_MaxSendTimeStamp";
+            this.label_MaxSendTimeStamp.Size = new System.Drawing.Size(11, 12);
+            this.label_MaxSendTimeStamp.TabIndex = 7;
+            this.label_MaxSendTimeStamp.Text = "0";
             // 
-            // label2
+            // label9
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(5, 10);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(74, 12);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "有效連線數 : ";
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(5, 85);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(76, 12);
+            this.label9.TabIndex = 8;
+            this.label9.Text = "TimeStamp    : ";
             // 
-            // Label_ClientCount
+            // label_LastSendTime
             // 
-            this.Label_ClientCount.AutoSize = true;
-            this.Label_ClientCount.Location = new System.Drawing.Point(85, 12);
-            this.Label_ClientCount.Name = "Label_ClientCount";
-            this.Label_ClientCount.Size = new System.Drawing.Size(11, 12);
-            this.Label_ClientCount.TabIndex = 0;
-            this.Label_ClientCount.Text = "0";
+            this.label_LastSendTime.AutoSize = true;
+            this.label_LastSendTime.Location = new System.Drawing.Point(86, 145);
+            this.label_LastSendTime.Name = "label_LastSendTime";
+            this.label_LastSendTime.Size = new System.Drawing.Size(11, 12);
+            this.label_LastSendTime.TabIndex = 9;
+            this.label_LastSendTime.Text = "0";
             // 
-            // label3
+            // label11
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(5, 40);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(62, 12);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "心跳倒數 : ";
-            // 
-            // Label_HeartCountDown
-            // 
-            this.Label_HeartCountDown.AutoSize = true;
-            this.Label_HeartCountDown.Location = new System.Drawing.Point(73, 40);
-            this.Label_HeartCountDown.Name = "Label_HeartCountDown";
-            this.Label_HeartCountDown.Size = new System.Drawing.Size(11, 12);
-            this.Label_HeartCountDown.TabIndex = 0;
-            this.Label_HeartCountDown.Text = "0";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(199, 10);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(50, 12);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "轉發數 : ";
-            // 
-            // Label_ForwardingCount
-            // 
-            this.Label_ForwardingCount.AutoSize = true;
-            this.Label_ForwardingCount.Location = new System.Drawing.Point(255, 10);
-            this.Label_ForwardingCount.Name = "Label_ForwardingCount";
-            this.Label_ForwardingCount.Size = new System.Drawing.Size(11, 12);
-            this.Label_ForwardingCount.TabIndex = 0;
-            this.Label_ForwardingCount.Text = "0";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(5, 70);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(76, 12);
-            this.label8.TabIndex = 4;
-            this.label8.Text = "MaxUseTime : ";
-            // 
-            // label_MaxSendMs
-            // 
-            this.label_MaxSendMs.AutoSize = true;
-            this.label_MaxSendMs.Location = new System.Drawing.Point(87, 70);
-            this.label_MaxSendMs.Name = "label_MaxSendMs";
-            this.label_MaxSendMs.Size = new System.Drawing.Size(11, 12);
-            this.label_MaxSendMs.TabIndex = 3;
-            this.label_MaxSendMs.Text = "0";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(5, 100);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(75, 12);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "AvgUseTime : ";
-            // 
-            // label_AvgSendMs
-            // 
-            this.label_AvgSendMs.AutoSize = true;
-            this.label_AvgSendMs.Location = new System.Drawing.Point(86, 100);
-            this.label_AvgSendMs.Name = "label_AvgSendMs";
-            this.label_AvgSendMs.Size = new System.Drawing.Size(11, 12);
-            this.label_AvgSendMs.TabIndex = 1;
-            this.label_AvgSendMs.Text = "0";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(199, 40);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(50, 12);
-            this.label7.TabIndex = 6;
-            this.label7.Text = "送出數 : ";
-            // 
-            // label_SendCount
-            // 
-            this.label_SendCount.AutoSize = true;
-            this.label_SendCount.Location = new System.Drawing.Point(255, 40);
-            this.label_SendCount.Name = "label_SendCount";
-            this.label_SendCount.Size = new System.Drawing.Size(11, 12);
-            this.label_SendCount.TabIndex = 5;
-            this.label_SendCount.Text = "0";
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(5, 145);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(74, 12);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "LastUseTime : ";
             // 
             // MainForm
             // 
@@ -320,11 +364,11 @@
             this.Text = "OriginalDataForwarding";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage_Statu.ResumeLayout(false);
+            this.tabPage_Statu.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_Clients)).EndInit();
             this.tabPage3.ResumeLayout(false);
-            this.tabPage_Statu.ResumeLayout(false);
-            this.tabPage_Statu.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -357,6 +401,10 @@
         private System.Windows.Forms.Label Label_HeartCountDown;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label Label_ForwardingCount;
+        private System.Windows.Forms.Label label_LastSendTime;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label_MaxSendTimeStamp;
+        private System.Windows.Forms.Label label9;
     }
 }
 

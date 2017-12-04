@@ -150,6 +150,16 @@ namespace OriginalDataForwarding.Modules.TCPListener
         private double fMaxSendMs = 0;
 
         /// <summary>
+        /// 最後轉發時間
+        /// </summary>
+        private double fLastSendMs = 0;
+
+        /// <summary>
+        /// 最大轉發時間時戳
+        /// </summary>
+        private DateTime fMaxSendMsTimeStamp = new DateTime();
+
+        /// <summary>
         /// 是否保留新連線
         /// </summary>
         private bool fIsKeepNewConnectionWhenOverLimit;
@@ -358,6 +368,24 @@ namespace OriginalDataForwarding.Modules.TCPListener
         }
 
         /// <summary>
+        /// 取得最大轉發時間時戳
+        /// </summary>
+        /// <returns></returns>
+        public string GetMaxSendMsTimeStamp ()
+        {
+            return fMaxSendMsTimeStamp.ToString("MM/dd HH:mm:ss");
+        }
+
+        /// <summary>
+        /// 取得最後轉發時間
+        /// </summary>
+        /// <returns></returns>
+        public double GetLastSendMs ()
+        {
+            return Math.Round( fLastSendMs, 2, MidpointRounding.AwayFromZero );
+        }
+
+        /// <summary>
         /// 取得有效的連線數
         /// </summary>
         /// <returns></returns>
@@ -552,8 +580,16 @@ namespace OriginalDataForwarding.Modules.TCPListener
             if ( message.DataType != 0 )
             {
                 fSendCount++;
-                fMaxSendMs = Math.Max( fMaxSendMs, taskTimeSpan.TotalMilliseconds );
-                fTotalSendMs += taskTimeSpan.TotalMilliseconds;
+
+                var taskTime = taskTimeSpan.TotalMilliseconds;
+                if ( taskTime > fMaxSendMs )
+                {
+                    fMaxSendMs = taskTime;
+                    fMaxSendMsTimeStamp = DateTime.Now;
+                }
+                
+                fTotalSendMs += taskTime;
+                fLastSendMs = taskTime;
             }
 
             //如果單次轉發超過300ms就應該注意            
