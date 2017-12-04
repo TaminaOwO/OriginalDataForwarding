@@ -21,11 +21,13 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// </summary>
         /// <param name="socketPort"></param>
         /// <param name="isKeepNewConnectionWhenOverLimit">是否保留新連線</param>
+        /// <param name="clientHeartBeatFrequency">客端心跳間隔</param>
         /// <param name="outputMessage">輸出訊息</param>
-        public ProxyServer ( int socketPort,bool isKeepNewConnectionWhenOverLimit, Action<string> outputMessage )
+        public ProxyServer ( int socketPort,bool isKeepNewConnectionWhenOverLimit,int clientHeartBeatFrequency, Action<string> outputMessage )
         {
             fOutputMessage = outputMessage;
             fIsKeepNewConnectionWhenOverLimit = isKeepNewConnectionWhenOverLimit;
+            fClientHeartBeatFrequency = clientHeartBeatFrequency;
 
             // Listener worker
             fTcpListener = new TcpListener ( IPAddress.Any , socketPort );
@@ -163,6 +165,11 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 是否保留新連線
         /// </summary>
         private bool fIsKeepNewConnectionWhenOverLimit;
+
+        /// <summary>
+        /// 客端心跳間隔
+        /// </summary>
+        private int fClientHeartBeatFrequency;
 
         /// <summary>
         /// 心跳封包
@@ -493,17 +500,22 @@ namespace OriginalDataForwarding.Modules.TCPListener
                     {
                         //還需要補踢的連線數
                         var needRemoveSuccessClientCount = needRemoveClientCount - needRemoveClients.Count;
-
+                        
+                        //超過時間沒接到心跳的優先踢
+                        var now = DateTime.Now;
+                        var needRemoves = successClients.OrderByDescending( x => ( now - x.LastReceiveTime ).Seconds > fClientHeartBeatFrequency );
                         if ( fIsKeepNewConnectionWhenOverLimit )
                         {
                             //從舊的開始踢
-                            needRemoveClients.AddRange( successClients.OrderBy( x => x.ConnectedStamp ).Take( needRemoveSuccessClientCount ) );
+                            needRemoves = needRemoves.ThenBy( x => x.ConnectedStamp );
                         }
                         else
                         {
                             //從新的開始踢
-                            needRemoveClients.AddRange( successClients.OrderByDescending( x => x.ConnectedStamp ).Take( needRemoveSuccessClientCount ) );
+                            needRemoves = needRemoves.ThenByDescending( x => x.ConnectedStamp );
                         }
+
+                        needRemoveClients.AddRange( needRemoves.Take( needRemoveSuccessClientCount ) );
                     }
 
                     #endregion
@@ -673,6 +685,9 @@ namespace OriginalDataForwarding.Modules.TCPListener
                         {
                             stream.BeginRead( fReadByte, 0, fReadByte.Length, null, null );
                         }
+
+                        //更新接收時戳
+                        client.LastReceiveTime = DateTime.Now;
                     }
 
                     tickMessage = string.Format( "W:{0}", writeWatch.ElapsedMilliseconds );

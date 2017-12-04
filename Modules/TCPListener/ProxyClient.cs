@@ -12,13 +12,22 @@ namespace OriginalDataForwarding.Modules.TCPListener
             IPEndPoint ipep = client.Client.RemoteEndPoint as IPEndPoint;
             Address = ipep.Address.ToString();
             ClientStream = client.GetStream();
-            ConnectedStamp = DateTime.Now;            
+            ConnectedStamp = DateTime.Now;
+            LastReceiveTime = DateTime.Now;
         }
         
         /// <summary>
         /// 連線請求時間
         /// </summary>
         public DateTime ConnectedStamp
+        {
+            set; get;
+        }
+
+        /// <summary>
+        /// 最後接收心跳時間
+        /// </summary>
+        public DateTime LastReceiveTime
         {
             set; get;
         }

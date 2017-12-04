@@ -35,7 +35,7 @@ namespace OriginalDataForwarding
             // dataGridView 錯誤處理 (不然會跳exception)
             DataGridView_Clients.DataError += DataGridView_Clients_DataError;
 
-            fProxyServer = new ProxyServer( fSetting.MulticastPort, fSetting.IsKeepNewConnectionWhenOverLimit, OutMessages );
+            fProxyServer = new ProxyServer( fSetting.MulticastPort, fSetting.IsKeepNewConnectionWhenOverLimit,fSetting.ClientHeartBeatFrequency, OutMessages );
             fProxyServer.OnStatus.OnFireEvent += fProxyServer_OnStatusMessage;
 
             // 心跳封包樣本
@@ -189,25 +189,7 @@ namespace OriginalDataForwarding
                 DataGridView_Clients.AutoResizeColumns();
             }
         }
-
-        /// <summary>
-        /// 阻擋
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_FormClosing( object sender, FormClosingEventArgs e )
-        {
-            if ( MessageBox.Show( "真的要離開嗎? 通知不會回補!", "警告", MessageBoxButtons.YesNo ) == System.Windows.Forms.DialogResult.No )
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                File.AppendAllText( "appExit.log", string.Format( "[{0}]程式被關閉, reason = {1}\r\n", DateTime.Now, e.CloseReason ) );
-            }
-        }
-
-
+        
         /// <summary>
         /// 錯誤視窗處理 這裡不需要顯示
         /// </summary>

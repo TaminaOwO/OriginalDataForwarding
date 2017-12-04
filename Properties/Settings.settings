@@ -55,5 +55,8 @@ OptAfterHours: 9961
     <Setting Name="IsKeepNewConnectionWhenOverLimit" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ClientHeartBeatFrequency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
