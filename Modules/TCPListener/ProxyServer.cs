@@ -503,7 +503,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
                         
                         //超過時間沒接到心跳的優先踢
                         var now = DateTime.Now;
-                        var needRemoves = successClients.OrderByDescending( x => ( now - x.LastReceiveTime ).Seconds > fClientHeartBeatFrequency );
+                        var needRemoves = successClients.OrderByDescending( x => ( now - x.LastReceiveTime ).TotalSeconds > fClientHeartBeatFrequency );
                         if ( fIsKeepNewConnectionWhenOverLimit )
                         {
                             //從舊的開始踢
