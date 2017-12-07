@@ -13,16 +13,23 @@ namespace OriginalDataForwarding.Modules.TCPListener
             Address = ipep.Address.ToString();
             ClientStream = client.GetStream();
             ConnectedStamp = DateTime.Now;
-            ReadBytes = new byte[BytesLength];
+            LastReceiveTime = DateTime.Now;
         }
-
-
+        
         /// <summary>
         /// 連線請求時間
         /// </summary>
         public DateTime ConnectedStamp
         {
-            private set; get;
+            set; get;
+        }
+
+        /// <summary>
+        /// 最後接收心跳時間
+        /// </summary>
+        public DateTime LastReceiveTime
+        {
+            set; get;
         }
 
         /// <summary>
@@ -48,18 +55,5 @@ namespace OriginalDataForwarding.Modules.TCPListener
         {
             set; get;
         }
-
-        /// <summary>
-        /// buffer reads
-        /// </summary>
-        public byte[] ReadBytes
-        {
-            set; get;
-        }
-
-        /// <summary>
-        /// buffer length
-        /// </summary>
-        public static int BytesLength = 4096;
     }
 }

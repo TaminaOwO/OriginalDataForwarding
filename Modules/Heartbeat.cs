@@ -29,7 +29,7 @@ namespace OriginalDataForwarding.Modules
                      if ( Timeout < now )
                      {
                          Timeout = now.Add( fCycleDealay );
-                         fBroadcasting( fHeartbeat, 0 );
+                         fBroadcasting( fHeartbeat, HEART_BEAT_DATA_TYPE );
                      }
 
                      //休息一下
@@ -48,6 +48,16 @@ namespace OriginalDataForwarding.Modules
             fToken.Cancel();
             fHeartbeater.Wait();
         }
+
+
+        #region 變數
+
+        /// <summary>
+        /// 心跳封包類型
+        /// </summary>
+        public const ushort HEART_BEAT_DATA_TYPE = 0;
+
+        #endregion
 
         #region 變數
 
@@ -75,6 +85,11 @@ namespace OriginalDataForwarding.Modules
         /// 心跳封包
         /// </summary>
         private byte[] fHeartbeat;
+
+        /// <summary>
+        /// 心跳封包
+        /// </summary>
+        public byte[] HeartbeatBytes => fHeartbeat;
 
         /// <summary>
         /// 下一次的timeout

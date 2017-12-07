@@ -4,14 +4,9 @@ using OriginalDataForwarding.Modules.TCPListener;
 using OriginalDataForwarding.Properties;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OriginalDataForwarding
@@ -25,27 +20,26 @@ namespace OriginalDataForwarding
             fSetting = new Settings();
 
             MarketType marketType = (MarketType)fSetting.ApMartketType;
-
-
             this.Text = string.Format( "{0} {1} Ver:{2}", marketType, Application.ProductName, Application.ProductVersion );
 
-            fOriginKey = string.Format( "{0}:{1}",
-                                GeneralTools.GetServiceOriginalKey( fSetting.DpscPort, Assembly.GetExecutingAssembly() )
-                                , marketType );
+            //服務原始IDKey
+            string originKey = string.Format( "{0}:{1}", GeneralTools.GetServiceOriginalKey( fSetting.DpscPort, Assembly.GetExecutingAssembly() ), marketType );
 
-            TextBox_DpscKeyId.Text = fOriginKey;
+            TextBox_DpscKeyId.Text = originKey;
 
             // dataGridView 錯誤處理 (不然會跳exception)
             DataGridView_Clients.DataError += DataGridView_Clients_DataError;
 
-            fProxyServer = new ProxyServer( fSetting.MulticastPort );
+            fProxyServer = new ProxyServer( fSetting.MulticastPort, fSetting.IsKeepNewConnectionWhenOverLimit,fSetting.ClientHeartBeatFrequency, OutMessages );
             fProxyServer.OnStatus.OnFireEvent += fProxyServer_OnStatusMessage;
 
             // 心跳封包樣本
             fHeartbeat = new Heartbeat( new TimeSpan( 0, 0, fSetting.HeartBeatFrequency ), fProxyServer.Broadcasting );
 
+            fProxyServer.SetHeartBeatPackage( fHeartbeat.HeartbeatBytes, Heartbeat.HEART_BEAT_DATA_TYPE );
+
             //發送模組
-            fForwardModule = new ForwardModule( fOriginKey, 
+            fForwardModule = new ForwardModule( originKey, 
                                                 fSetting.DpscIp, fSetting.DpscPort, fSetting.DpscChk,
                                                 OutMessages,
                                                 fHeartbeat.BlockingHeartbeat,
@@ -56,7 +50,6 @@ namespace OriginalDataForwarding
             fBindingSource = new BindingSource();
             fBindingSource.DataSource = fProxyServer.GetAvailableClinets();
             DataGridView_Clients.DataSource = fBindingSource;
-
         }
 
         #region 變數
@@ -65,11 +58,6 @@ namespace OriginalDataForwarding
         /// 設定
         /// </summary>
         private Settings fSetting;
-
-        /// <summary>
-        /// 服務原始IDKey
-        /// </summary>
-        private string fOriginKey;
 
         /// <summary>
         /// stocket轉送
@@ -151,9 +139,7 @@ namespace OriginalDataForwarding
         /// <param name="statusMessage"></param>
         private void fProxyServer_OnStatusMessage( string statusMessage )
         {
-            TextBox_Status.AppendText( string.Format( "[{0}]", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ) ) );
-            TextBox_Status.AppendText( statusMessage );
-            TextBox_Status.AppendText( "\r\n" );
+            TextBox_Status.AppendText( string.Format( "[{0}]{1}{2}", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ), statusMessage, Environment.NewLine ) );
         }
 
         /// <summary>
@@ -162,7 +148,15 @@ namespace OriginalDataForwarding
         /// <param name="message"></param>
         private void OutMessages( string message )
         {
-            TextBox_Status.AppendText( string.Format( "[{0}] : {1}{2}", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ), message, Environment.NewLine ) );
+            if ( InvokeRequired )
+            {
+                this.Invoke( new Action<string>( OutMessages ), new object[] { message } );
+                return;
+            }
+            else
+            {
+                TextBox_Status.AppendText( string.Format( "[{0}] : {1}{2}", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ), message, Environment.NewLine ) );
+            }           
         }
 
         /// <summary>
@@ -172,31 +166,25 @@ namespace OriginalDataForwarding
         /// <param name="e"></param>
         private void Timer_Repaint_Tick( object sender, EventArgs e )
         {
-            Label_ClientCount.Text = fProxyServer.GetAvailableClinetCount().ToString();
-            Label_ForwardingCount.Text = fForwardModule.GetForwardingCount().ToString();
-            Label_HeartCountDown.Text = fHeartbeat.GetHeartbeatRemainingSec().ToString( "0" );
-            fBindingSource.ResetBindings( true );
-            DataGridView_Clients.AutoResizeColumns();
-        }
+            if ( tabControl1.SelectedTab == tabPage_Statu )
+            {
+                Label_ClientCount.Text = fProxyServer.GetAvailableClinetCount().ToString();
+                label_MaxSendMs.Text = fProxyServer.GetMaxSendMs().ToString();
+                label_MaxSendTimeStamp.Text = fProxyServer.GetMaxSendMsTimeStamp();
+                label_AvgSendMs.Text = fProxyServer.GetAvgSendMs().ToString();
+                label_LastSendTime.Text = fProxyServer.GetLastSendMs().ToString();
+                label_SendCount.Text = fProxyServer.GetSendCount().ToString();
 
-        /// <summary>
-        /// 阻擋
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_FormClosing( object sender, FormClosingEventArgs e )
-        {
-            if ( MessageBox.Show( "真的要離開嗎? 通知不會回補!", "警告", MessageBoxButtons.YesNo ) == System.Windows.Forms.DialogResult.No )
-            {
-                e.Cancel = true;
+                Label_ForwardingCount.Text = fForwardModule.GetForwardingCount().ToString();
+                Label_HeartCountDown.Text = fHeartbeat.GetHeartbeatRemainingSec().ToString( "0" );
             }
-            else
+            else if ( tabControl1.SelectedTab == tabPage2 )
             {
-                File.AppendAllText( "appExit.log", string.Format( "[{0}]程式被關閉, reason = {1}\r\n", DateTime.Now, e.CloseReason ) );
+                fBindingSource.ResetBindings( true );
+                DataGridView_Clients.AutoResizeColumns();
             }
         }
-
-
+        
         /// <summary>
         /// 錯誤視窗處理 這裡不需要顯示
         /// </summary>

@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="DpscIp" Type="System.String" Scope="User">
-      <Value Profile="(Default)">192.168.10.238</Value>
+      <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
     <Setting Name="DpscPort" Type="System.UInt16" Scope="User">
       <Value Profile="(Default)">8000</Value>
@@ -50,7 +50,13 @@ OptAfterHours: 9961
 </Value>
     </Setting>
     <Setting Name="HeartBeatFrequency" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">30</Value>
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="IsKeepNewConnectionWhenOverLimit" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ClientHeartBeatFrequency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

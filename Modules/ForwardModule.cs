@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace OriginalDataForwarding.Modules
 {
+    /// <summary>
+    /// 發送模組
+    /// </summary>
     public class ForwardModule : IDisposable
     {
         /// <summary>
-        /// 建構子
+        /// 發送模組
         /// </summary>
         /// <param name="dpscKey"></param>
         /// <param name="dpscIp"></param>
@@ -19,7 +22,7 @@ namespace OriginalDataForwarding.Modules
         /// <param name="outputMessage"></param>
         /// <param name="broadcasting"></param>
         /// <param name="channel"></param>
-        public ForwardModule(string dpscKey, string dpscIp, ushort dpscPort, uint chkSum,
+        public ForwardModule (string dpscKey, string dpscIp, ushort dpscPort, uint chkSum,
                             Action<string> outputMessage,
                             Action<byte[], ushort> broadcasting, uint channel )
         {
@@ -34,7 +37,6 @@ namespace OriginalDataForwarding.Modules
             fDpsc.OnStatus += fDpsc_OnStatus;
             fDpsc.OnRcvData += fDpsc_OnRcvData;
             fDpsc.Connect();
-
         }
 
         ~ForwardModule()
@@ -152,17 +154,12 @@ namespace OriginalDataForwarding.Modules
         /// <param name="data"></param>
         private void fDpsc_OnRcvData( Dpsc sender, ushort dataType, byte[] data )
         {
-            switch ( dataType )
+            if ( dataType == fChannel )
             {
-                default:
-                    if ( dataType == fChannel )
-                    {
-                        fForwardingCount++;
+                fForwardingCount++;
 
-                        //直接把收到封包轉發出去
-                        fBroadcasting( data, dataType );
-                    }
-                    break;
+                //直接把收到封包轉發出去
+                fBroadcasting( data, dataType );
             }
         }
 
