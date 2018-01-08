@@ -1,4 +1,4 @@
-﻿using CMoney.WebBackend.Tools;
+﻿using CMoney.Real.Dpsc;
 using OriginalDataForwarding.Modules;
 using OriginalDataForwarding.Modules.TCPListener;
 using OriginalDataForwarding.Properties;
@@ -20,10 +20,10 @@ namespace OriginalDataForwarding
             fSetting = new Settings();
 
             MarketType marketType = (MarketType)fSetting.ApMartketType;
-            this.Text = string.Format( "{0} {1} Ver:{2}", marketType, Application.ProductName, Application.ProductVersion );
+            this.Text = string.Format( "{0} {1} Ver:{2} x{3}", marketType, Application.ProductName, Application.ProductVersion , IntPtr.Size * 8);
 
             //服務原始IDKey
-            string originKey = string.Format( "{0}:{1}", GeneralTools.GetServiceOriginalKey( fSetting.DpscPort, Assembly.GetExecutingAssembly() ), marketType );
+            string originKey = string.Format( "{0}:{1}", Dpsc.GetServiceOriginalKey( fSetting.DpscPort, Assembly.GetExecutingAssembly() ), marketType);
 
             TextBox_DpscKeyId.Text = originKey;
 
@@ -51,6 +51,15 @@ namespace OriginalDataForwarding
             fBindingSource.DataSource = fProxyServer.GetAvailableClinets();
             DataGridView_Clients.DataSource = fBindingSource;
         }
+
+        #region
+
+        /// <summary>
+        /// 顯示文字最大行數
+        /// </summary>
+        private int SHOW_TEXT_LIMIT_LINES = 500;
+
+        #endregion
 
         #region 變數
 
@@ -139,6 +148,11 @@ namespace OriginalDataForwarding
         /// <param name="statusMessage"></param>
         private void fProxyServer_OnStatusMessage( string statusMessage )
         {
+            if (TextBox_Status.Lines.Count() > SHOW_TEXT_LIMIT_LINES)
+            {
+                TextBox_Status.Clear();
+            }
+
             TextBox_Status.AppendText( string.Format( "[{0}]{1}{2}", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ), statusMessage, Environment.NewLine ) );
         }
 
@@ -155,6 +169,11 @@ namespace OriginalDataForwarding
             }
             else
             {
+                if (TextBox_Status.Lines.Count() > SHOW_TEXT_LIMIT_LINES)
+                {
+                    TextBox_Status.Clear();
+                }
+
                 TextBox_Status.AppendText( string.Format( "[{0}] : {1}{2}", DateTime.Now.ToString( "yyyy/MM/dd HH:mm:ss" ), message, Environment.NewLine ) );
             }           
         }
@@ -233,7 +252,7 @@ namespace OriginalDataForwarding
 
             fProxyServer.RemoveClients( checkedClients );
 
-            button_GetAllClients.PerformClick();
+            checkedListBox_Clients.Items.Clear();
         }
     }
 

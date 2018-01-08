@@ -37,6 +37,10 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage_Statu = new System.Windows.Forms.TabPage();
+            this.label_LastSendTime = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label_MaxSendTimeStamp = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.label_AvgSendMs = new System.Windows.Forms.Label();
             this.label_SendCount = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -55,23 +59,24 @@
             this.button_RemoveClients = new System.Windows.Forms.Button();
             this.checkedListBox_Clients = new System.Windows.Forms.CheckedListBox();
             this.button_GetAllClients = new System.Windows.Forms.Button();
-            this.label_MaxSendTimeStamp = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label_LastSendTime = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage_Statu.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_Clients)).BeginInit();
             this.tabPage3.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // TextBox_Status
             // 
-            this.TextBox_Status.Location = new System.Drawing.Point(0, 3);
+            this.TextBox_Status.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TextBox_Status.Location = new System.Drawing.Point(3, 3);
             this.TextBox_Status.Name = "TextBox_Status";
-            this.TextBox_Status.Size = new System.Drawing.Size(418, 176);
+            this.TextBox_Status.Size = new System.Drawing.Size(724, 343);
             this.TextBox_Status.TabIndex = 0;
             this.TextBox_Status.Text = "";
             // 
@@ -104,10 +109,11 @@
             this.tabControl1.Controls.Add(this.tabPage_Statu);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(10, 34);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(429, 211);
+            this.tabControl1.Size = new System.Drawing.Size(496, 213);
             this.tabControl1.TabIndex = 4;
             // 
             // tabPage1
@@ -116,7 +122,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(421, 185);
+            this.tabPage1.Size = new System.Drawing.Size(730, 349);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "訊息";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -142,10 +148,46 @@
             this.tabPage_Statu.Location = new System.Drawing.Point(4, 22);
             this.tabPage_Statu.Name = "tabPage_Statu";
             this.tabPage_Statu.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_Statu.Size = new System.Drawing.Size(421, 185);
+            this.tabPage_Statu.Size = new System.Drawing.Size(730, 349);
             this.tabPage_Statu.TabIndex = 3;
             this.tabPage_Statu.Text = "狀態";
             this.tabPage_Statu.UseVisualStyleBackColor = true;
+            // 
+            // label_LastSendTime
+            // 
+            this.label_LastSendTime.AutoSize = true;
+            this.label_LastSendTime.Location = new System.Drawing.Point(86, 145);
+            this.label_LastSendTime.Name = "label_LastSendTime";
+            this.label_LastSendTime.Size = new System.Drawing.Size(11, 12);
+            this.label_LastSendTime.TabIndex = 9;
+            this.label_LastSendTime.Text = "0";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(5, 145);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(74, 12);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "LastUseTime : ";
+            // 
+            // label_MaxSendTimeStamp
+            // 
+            this.label_MaxSendTimeStamp.AutoSize = true;
+            this.label_MaxSendTimeStamp.Location = new System.Drawing.Point(87, 85);
+            this.label_MaxSendTimeStamp.Name = "label_MaxSendTimeStamp";
+            this.label_MaxSendTimeStamp.Size = new System.Drawing.Size(11, 12);
+            this.label_MaxSendTimeStamp.TabIndex = 7;
+            this.label_MaxSendTimeStamp.Text = "0";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(5, 85);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(76, 12);
+            this.label9.TabIndex = 8;
+            this.label9.Text = "TimeStamp    : ";
             // 
             // label_AvgSendMs
             // 
@@ -261,7 +303,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(421, 185);
+            this.tabPage2.Size = new System.Drawing.Size(730, 349);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "當前連線資訊";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -269,10 +311,11 @@
             // DataGridView_Clients
             // 
             this.DataGridView_Clients.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DataGridView_Clients.Location = new System.Drawing.Point(0, 3);
+            this.DataGridView_Clients.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DataGridView_Clients.Location = new System.Drawing.Point(3, 3);
             this.DataGridView_Clients.Name = "DataGridView_Clients";
             this.DataGridView_Clients.RowTemplate.Height = 24;
-            this.DataGridView_Clients.Size = new System.Drawing.Size(418, 176);
+            this.DataGridView_Clients.Size = new System.Drawing.Size(724, 343);
             this.DataGridView_Clients.TabIndex = 0;
             // 
             // tabPage3
@@ -282,7 +325,7 @@
             this.tabPage3.Controls.Add(this.button_GetAllClients);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(421, 185);
+            this.tabPage3.Size = new System.Drawing.Size(488, 187);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Tool";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -315,50 +358,32 @@
             this.button_GetAllClients.UseVisualStyleBackColor = true;
             this.button_GetAllClients.Click += new System.EventHandler(this.button_GetAllClients_Click);
             // 
-            // label_MaxSendTimeStamp
+            // panel1
             // 
-            this.label_MaxSendTimeStamp.AutoSize = true;
-            this.label_MaxSendTimeStamp.Location = new System.Drawing.Point(87, 85);
-            this.label_MaxSendTimeStamp.Name = "label_MaxSendTimeStamp";
-            this.label_MaxSendTimeStamp.Size = new System.Drawing.Size(11, 12);
-            this.label_MaxSendTimeStamp.TabIndex = 7;
-            this.label_MaxSendTimeStamp.Text = "0";
+            this.panel1.Controls.Add(this.TextBox_DpscKeyId);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(496, 44);
+            this.panel1.TabIndex = 5;
             // 
-            // label9
+            // panel2
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(5, 85);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(76, 12);
-            this.label9.TabIndex = 8;
-            this.label9.Text = "TimeStamp    : ";
-            // 
-            // label_LastSendTime
-            // 
-            this.label_LastSendTime.AutoSize = true;
-            this.label_LastSendTime.Location = new System.Drawing.Point(86, 145);
-            this.label_LastSendTime.Name = "label_LastSendTime";
-            this.label_LastSendTime.Size = new System.Drawing.Size(11, 12);
-            this.label_LastSendTime.TabIndex = 9;
-            this.label_LastSendTime.Text = "0";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(5, 145);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(74, 12);
-            this.label11.TabIndex = 10;
-            this.label11.Text = "LastUseTime : ";
+            this.panel2.Controls.Add(this.tabControl1);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 44);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(496, 213);
+            this.panel2.TabIndex = 6;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(445, 257);
-            this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.TextBox_DpscKeyId);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(496, 257);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "OriginalDataForwarding";
@@ -369,8 +394,10 @@
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_Clients)).EndInit();
             this.tabPage3.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -405,6 +432,8 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label_MaxSendTimeStamp;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
     }
 }
 
