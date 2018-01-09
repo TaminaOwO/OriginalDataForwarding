@@ -12,7 +12,7 @@
       <Value Profile="(Default)">2102342342</Value>
     </Setting>
     <Setting Name="ApMartketType" Type="System.Byte" Scope="User">
-      <Value Profile="(Default)">1</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="MulticastPort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">7001</Value>
@@ -57,6 +57,9 @@ OptAfterHours: 9961
     </Setting>
     <Setting Name="ClientHeartBeatFrequency" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="ClientSameIPLimitCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
     </Setting>
   </Settings>
 </SettingsFile>

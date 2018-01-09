@@ -61,7 +61,7 @@ namespace OriginalDataForwarding.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
         public byte ApMartketType {
             get {
                 return ((byte)(this["ApMartketType"]));
@@ -166,6 +166,18 @@ OptAfterHours: 9961
             }
             set {
                 this["ClientHeartBeatFrequency"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int ClientSameIPLimitCount {
+            get {
+                return ((int)(this["ClientSameIPLimitCount"]));
+            }
+            set {
+                this["ClientSameIPLimitCount"] = value;
             }
         }
     }

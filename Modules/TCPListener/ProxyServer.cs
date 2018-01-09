@@ -22,12 +22,14 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// <param name="socketPort"></param>
         /// <param name="isKeepNewConnectionWhenOverLimit">是否保留新連線</param>
         /// <param name="clientHeartBeatFrequency">客端心跳間隔</param>
+        /// <param name="clientSameIPLimitCount">同 IP 的最大連線數</param>
         /// <param name="outputMessage">輸出訊息</param>
-        public ProxyServer(int socketPort, bool isKeepNewConnectionWhenOverLimit, int clientHeartBeatFrequency, Action<string> outputMessage)
+        public ProxyServer(int socketPort, bool isKeepNewConnectionWhenOverLimit, int clientHeartBeatFrequency,int clientSameIPLimitCount , Action<string> outputMessage)
         {
             fOutputMessage = outputMessage;
             fIsKeepNewConnectionWhenOverLimit = isKeepNewConnectionWhenOverLimit;
             fClientHeartBeatFrequency = clientHeartBeatFrequency;
+            fClientSameIPLimitCount = clientSameIPLimitCount;
 
             // Listener worker
             fTcpListener = new TcpListener(IPAddress.Any, socketPort);
@@ -76,11 +78,6 @@ namespace OriginalDataForwarding.Modules.TCPListener
         }
 
         /// <summary>
-        /// 同 IP 的最大連線數
-        /// </summary>
-        private const int SAME_IP_LIMIT_COUNT = 2;
-
-        /// <summary>
         /// 合理的時間間格
         /// </summary>
         private const long REASONABLE_TIME_GRID = 300;
@@ -89,11 +86,6 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 合理的單一工作時間間格
         /// </summary>
         private const long REASONABLE_TIME_GRID_BY_TASK = 10;
-
-        /// <summary>
-        /// 多久送一次心跳封包(秒)
-        /// </summary>
-        private const int HEARTBEAT_INTERVAL_TIME = 1;
 
         /// <summary>
         /// 迴圈最大執行時間(毫秒)
@@ -186,6 +178,11 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 客端心跳間隔
         /// </summary>
         private int fClientHeartBeatFrequency;
+
+        /// <summary>
+        /// 同 IP 的最大連線數 (預設2)
+        /// </summary>
+        private int fClientSameIPLimitCount = 2;
 
         /// <summary>
         /// 心跳封包
@@ -486,7 +483,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
                         if (overLimitAddressGroupClients.TryGetValue(newConnection.Address, out oldClients))
                         {
                             //需要踢除的連線數
-                            var needRemoveClientCount = (oldClients.Count + 1) - SAME_IP_LIMIT_COUNT;
+                            var needRemoveClientCount = (oldClients.Count + 1) - fClientSameIPLimitCount;
 
                             #region 需要踢除的連線數
 
