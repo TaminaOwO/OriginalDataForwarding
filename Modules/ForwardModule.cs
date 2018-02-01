@@ -169,5 +169,13 @@ namespace OriginalDataForwarding.Modules
         {
             return fForwardingCount;
         }
+
+        /// <summary>
+        /// 重置統計
+        /// </summary>
+        public void ResetCalculation()
+        {
+            fForwardingCount = 0;
+        }
     }
 }

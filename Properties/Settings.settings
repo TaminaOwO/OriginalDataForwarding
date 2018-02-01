@@ -59,7 +59,7 @@ OptAfterHours: 9961
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="ClientSameIPLimitCount" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2</Value>
+      <Value Profile="(Default)">50</Value>
     </Setting>
   </Settings>
 </SettingsFile>

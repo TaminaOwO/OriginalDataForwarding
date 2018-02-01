@@ -95,6 +95,43 @@ namespace OriginalDataForwarding.Modules.TCPListener
             private set;
         }
 
+        /// <summary>
+        /// 非同步發送次數
+        /// </summary>
+        public long AsyncSendCount
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 非同步發送回覆次數
+        /// </summary>
+        public long AsyncSendCallbackCount
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 非同步讀取次數
+        /// </summary>
+        public long AsyncReadCount
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 非同步讀取回覆次數
+        /// </summary>
+        public long AsyncReceiveCallbackCount
+        {
+            get;
+            private set;
+        }
+
+
         #endregion
 
         /// <summary>
@@ -111,7 +148,17 @@ namespace OriginalDataForwarding.Modules.TCPListener
         /// 外部傳入 除錯訊息函式
         /// </summary>
         private Action<string> fAddDebugFun;
-        
+
+        /// <summary>
+        /// 重置統計資訊
+        /// </summary>
+        public void ResetCalculation()
+        {
+            AsyncSendCount = 0;
+            AsyncSendCallbackCount = 0;
+            AsyncReadCount = 0;
+            AsyncReceiveCallbackCount = 0;
+        }
 
         /// <summary>
         /// TcpClient是否連線
@@ -153,7 +200,8 @@ namespace OriginalDataForwarding.Modules.TCPListener
                     var stream = this.fClientStream;
                     this.fClientStream.BeginWrite(message.DataBytes, 0, message.DataBytes.Length, AsyncSendCallback, statistics);
                     isSuccess = true;
-                    
+
+                    this.AsyncSendCount++;
 
                     writeWatch.Stop();
 
@@ -163,6 +211,7 @@ namespace OriginalDataForwarding.Modules.TCPListener
                         //client端 只讀心跳包
                         byte[] buffer = new byte[TCP_BUFFER_SIZE];
                         this.fClientStream.BeginRead(buffer, 0, buffer.Length, AsyncReceiveCallback, buffer);
+                        this.AsyncReadCount++;
                     }
 
                     tickMessage = string.Format("W:{0}", writeWatch.ElapsedMilliseconds);
@@ -208,6 +257,8 @@ namespace OriginalDataForwarding.Modules.TCPListener
 
             try
             {
+                this.AsyncSendCallbackCount++;
+
                 // Retrieve the socket from the state object.  
                 statistics.SuccessSendCount++;
 
@@ -239,12 +290,12 @@ namespace OriginalDataForwarding.Modules.TCPListener
         {
             try
             {
-                
-                byte[] buffer = ar.AsyncState as byte[];
+                this.AsyncReceiveCallbackCount++;
+                int len = fClientStream.EndRead(ar);
+                //byte[] buffer = ar.AsyncState as byte[];
 
                 //更新接收時戳
                 this.LastReceiveTime = DateTime.Now;
-
             }
             catch (IOException ex)
             {

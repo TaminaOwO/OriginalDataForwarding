@@ -427,6 +427,22 @@ namespace OriginalDataForwarding.Modules.TCPListener
         }
 
         /// <summary>
+        /// 重置統計資訊
+        /// </summary>
+        public void ResetCalculation()
+        {
+            this.fSendCount = 0;
+            this.fTotalSendMs = 0;
+            this.fMaxSendMs = 0;
+            this.fLastSendMs = 0;
+
+            foreach (var client in fClientPool)
+            {
+                client.ResetCalculation();
+            }
+        }
+
+        /// <summary>
         /// 取得有效的連線數
         /// </summary>
         /// <returns></returns>

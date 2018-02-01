@@ -52,12 +52,17 @@ namespace OriginalDataForwarding
             DataGridView_Clients.DataSource = fBindingSource;
         }
 
-        #region
+        #region 常數
 
         /// <summary>
         /// 顯示文字最大行數
         /// </summary>
         private int SHOW_TEXT_LIMIT_LINES = 500;
+
+        /// <summary>
+        /// 早上6點重置統計
+        /// </summary>
+        private int RESET_CALCUATION_TIME = 6;
 
         #endregion
 
@@ -185,6 +190,14 @@ namespace OriginalDataForwarding
         /// <param name="e"></param>
         private void Timer_Repaint_Tick( object sender, EventArgs e )
         {
+            DateTime nowTime = DateTime.Now;
+
+            if (nowTime.Hour == RESET_CALCUATION_TIME && nowTime.Minute == 0 && nowTime.Second < 5)
+            {
+                fProxyServer.ResetCalculation();
+                fForwardModule.ResetCalculation();
+            }
+
             if ( tabControl1.SelectedTab == tabPage_Statu )
             {
                 Label_ClientCount.Text = fProxyServer.GetAvailableClinetCount().ToString();
@@ -253,6 +266,17 @@ namespace OriginalDataForwarding
             fProxyServer.RemoveClients( checkedClients );
 
             checkedListBox_Clients.Items.Clear();
+        }
+
+        /// <summary>
+        /// 確認主機連線狀態
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_ShowSystemConnection_Click(object sender, EventArgs e)
+        {
+            dataGridView_System.DataSource = null;
+            dataGridView_System.DataSource = ConnectionCheck.GetNetStatPorts(null,new List<string>() { fSetting.MulticastPort.ToString() });
         }
     }
 
