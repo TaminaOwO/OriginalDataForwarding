@@ -165,6 +165,16 @@ namespace OriginalDataForwarding.Modules.TCPListener
         private double fLastSendMs = 0;
 
         /// <summary>
+        /// 統計非同步回覆遺失數量(每日統計)
+        /// </summary>
+        private long fTotalMissCallbackCount = 0;
+
+        /// <summary>
+        /// 統計非同步回覆遺失數量(每日統計)
+        /// </summary>
+        public long TotalMissCallbackCount { get { return fTotalMissCallbackCount; } }
+
+        /// <summary>
         /// 最大轉發時間時戳
         /// </summary>
         private DateTime fMaxSendMsTimeStamp = new DateTime();
@@ -438,6 +448,8 @@ namespace OriginalDataForwarding.Modules.TCPListener
 
             foreach (var client in fClientPool)
             {
+                //每日統計
+                fTotalMissCallbackCount = fTotalMissCallbackCount + ( client.AsyncSendCount - client.AsyncSendCallbackCount);
                 client.ResetCalculation();
             }
         }

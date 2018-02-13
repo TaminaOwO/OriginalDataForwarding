@@ -59,25 +59,27 @@
             this.button_RemoveClients = new System.Windows.Forms.Button();
             this.checkedListBox_Clients = new System.Windows.Forms.CheckedListBox();
             this.button_GetAllClients = new System.Windows.Forms.Button();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.dataGridView_System = new System.Windows.Forms.DataGridView();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.button_ShowSystemConnection = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.button_ShowSystemConnection = new System.Windows.Forms.Button();
-            this.dataGridView_System = new System.Windows.Forms.DataGridView();
+            this.label_TotalMissCallbackCount = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage_Statu.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_Clients)).BeginInit();
             this.tabPage3.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.tabPage4.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_System)).BeginInit();
+            this.panel3.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // TextBox_Status
@@ -139,6 +141,8 @@
             // 
             // tabPage_Statu
             // 
+            this.tabPage_Statu.Controls.Add(this.label_TotalMissCallbackCount);
+            this.tabPage_Statu.Controls.Add(this.label10);
             this.tabPage_Statu.Controls.Add(this.label_LastSendTime);
             this.tabPage_Statu.Controls.Add(this.label11);
             this.tabPage_Statu.Controls.Add(this.label_MaxSendTimeStamp);
@@ -368,6 +372,55 @@
             this.button_GetAllClients.UseVisualStyleBackColor = true;
             this.button_GetAllClients.Click += new System.EventHandler(this.button_GetAllClients_Click);
             // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.panel4);
+            this.tabPage4.Controls.Add(this.panel3);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(488, 187);
+            this.tabPage4.TabIndex = 4;
+            this.tabPage4.Text = "主機連線狀態";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.dataGridView_System);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(0, 41);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(488, 146);
+            this.panel4.TabIndex = 1;
+            // 
+            // dataGridView_System
+            // 
+            this.dataGridView_System.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView_System.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView_System.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView_System.Name = "dataGridView_System";
+            this.dataGridView_System.RowTemplate.Height = 24;
+            this.dataGridView_System.Size = new System.Drawing.Size(488, 146);
+            this.dataGridView_System.TabIndex = 0;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.button_ShowSystemConnection);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(488, 41);
+            this.panel3.TabIndex = 0;
+            // 
+            // button_ShowSystemConnection
+            // 
+            this.button_ShowSystemConnection.Location = new System.Drawing.Point(359, 7);
+            this.button_ShowSystemConnection.Name = "button_ShowSystemConnection";
+            this.button_ShowSystemConnection.Size = new System.Drawing.Size(75, 23);
+            this.button_ShowSystemConnection.TabIndex = 0;
+            this.button_ShowSystemConnection.Text = "查詢";
+            this.button_ShowSystemConnection.UseVisualStyleBackColor = true;
+            this.button_ShowSystemConnection.Click += new System.EventHandler(this.button_ShowSystemConnection_Click);
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.TextBox_DpscKeyId);
@@ -387,54 +440,23 @@
             this.panel2.Size = new System.Drawing.Size(496, 213);
             this.panel2.TabIndex = 6;
             // 
-            // tabPage4
+            // label_TotalMissCallbackCount
             // 
-            this.tabPage4.Controls.Add(this.panel4);
-            this.tabPage4.Controls.Add(this.panel3);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(488, 187);
-            this.tabPage4.TabIndex = 4;
-            this.tabPage4.Text = "主機連線狀態";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.label_TotalMissCallbackCount.AutoSize = true;
+            this.label_TotalMissCallbackCount.Location = new System.Drawing.Point(292, 70);
+            this.label_TotalMissCallbackCount.Name = "label_TotalMissCallbackCount";
+            this.label_TotalMissCallbackCount.Size = new System.Drawing.Size(41, 12);
+            this.label_TotalMissCallbackCount.TabIndex = 11;
+            this.label_TotalMissCallbackCount.Text = "000000";
             // 
-            // panel3
+            // label10
             // 
-            this.panel3.Controls.Add(this.button_ShowSystemConnection);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(488, 41);
-            this.panel3.TabIndex = 0;
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.dataGridView_System);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(0, 41);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(488, 146);
-            this.panel4.TabIndex = 1;
-            // 
-            // button_ShowSystemConnection
-            // 
-            this.button_ShowSystemConnection.Location = new System.Drawing.Point(359, 7);
-            this.button_ShowSystemConnection.Name = "button_ShowSystemConnection";
-            this.button_ShowSystemConnection.Size = new System.Drawing.Size(75, 23);
-            this.button_ShowSystemConnection.TabIndex = 0;
-            this.button_ShowSystemConnection.Text = "查詢";
-            this.button_ShowSystemConnection.UseVisualStyleBackColor = true;
-            this.button_ShowSystemConnection.Click += new System.EventHandler(this.button_ShowSystemConnection_Click);
-            // 
-            // dataGridView_System
-            // 
-            this.dataGridView_System.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView_System.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView_System.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView_System.Name = "dataGridView_System";
-            this.dataGridView_System.RowTemplate.Height = 24;
-            this.dataGridView_System.Size = new System.Drawing.Size(488, 146);
-            this.dataGridView_System.TabIndex = 0;
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(199, 70);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(86, 12);
+            this.label10.TabIndex = 12;
+            this.label10.Text = "非同步遺失數 : ";
             // 
             // MainForm
             // 
@@ -453,13 +475,13 @@
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_Clients)).EndInit();
             this.tabPage3.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_System)).EndInit();
+            this.panel3.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
-            this.tabPage4.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_System)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -502,6 +524,8 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.DataGridView dataGridView_System;
         private System.Windows.Forms.Button button_ShowSystemConnection;
+        private System.Windows.Forms.Label label_TotalMissCallbackCount;
+        private System.Windows.Forms.Label label10;
     }
 }
 

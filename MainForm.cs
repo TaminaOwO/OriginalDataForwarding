@@ -98,6 +98,11 @@ namespace OriginalDataForwarding
         /// </summary>
         private List<ProxyClient> fAvailableClients;
 
+        /// <summary>
+        /// 最後排程執行日
+        /// </summary>
+        private int processDay = 0;
+
         #endregion
 
         #region 列舉
@@ -192,10 +197,12 @@ namespace OriginalDataForwarding
         {
             DateTime nowTime = DateTime.Now;
 
-            if (nowTime.Hour == RESET_CALCUATION_TIME && nowTime.Minute == 0 && nowTime.Second < 5)
+            if (nowTime.Hour == RESET_CALCUATION_TIME && processDay != nowTime.Day)
             {
                 fProxyServer.ResetCalculation();
                 fForwardModule.ResetCalculation();
+
+                processDay = nowTime.Day;
             }
 
             if ( tabControl1.SelectedTab == tabPage_Statu )
@@ -206,6 +213,8 @@ namespace OriginalDataForwarding
                 label_AvgSendMs.Text = fProxyServer.GetAvgSendMs().ToString();
                 label_LastSendTime.Text = fProxyServer.GetLastSendMs().ToString();
                 label_SendCount.Text = fProxyServer.GetSendCount().ToString();
+                label_TotalMissCallbackCount.Text = fProxyServer.TotalMissCallbackCount.ToString();
+
 
                 Label_ForwardingCount.Text = fForwardModule.GetForwardingCount().ToString();
                 Label_HeartCountDown.Text = fHeartbeat.GetHeartbeatRemainingSec().ToString( "0" );
